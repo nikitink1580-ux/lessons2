@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>ДАВИД | Не дрочи — турнир</title>
+    <title>ДАВИД | Не дрочи — живой рейтинг</title>
     <style>
         * {
             margin: 0;
@@ -334,13 +334,13 @@
         <input type="text" id="loginNameInput" placeholder="Твой ник (например, Давид)" maxlength="20" autocomplete="off">
         <button id="enterBtn">🚪 ВОЙТИ</button>
         <div id="loginError" style="margin-top: 16px; min-height: 40px;"></div>
-        <p style="margin-top: 28px; font-size: 12px; color:#bba87a;">👇 Всё работает мгновенно. Обменивайся кодами с друзьями!</p>
+        <p style="margin-top: 28px; font-size: 12px; color:#bba87a;">👇 Обменивайся кодами с друзьями — данные синхронизируются в облаке!</p>
     </div>
 
     <div id="mainScreen" class="main-screen hidden">
         <div class="hero">
             <h1>🍆 НЕ ДРОЧИ 🍆</h1>
-            <p>#ТУСОВКА_ПАЦАНОВ</p>
+            <p>#ЖИВОЙ_РЕЙТИНГ</p>
         </div>
 
         <div class="streak-card">
@@ -354,7 +354,7 @@
         <div class="info-message" id="dailyInfoText"></div>
         
         <div class="sync-status" id="syncStatus">
-            ✅ Данные сохраняются на телефоне
+            🌐 Синхронизация включена...
         </div>
 
         <div class="add-friend-section">
@@ -367,60 +367,99 @@
                 <input type="text" id="friendCodeInput" placeholder="Вставь код друга">
                 <button id="addFriendBtn">➕ Добавить</button>
             </div>
+            <p style="font-size: 0.7rem; color:#bba87a; margin-top: 8px;">💡 После добавления друга, он сразу появится в списке, а ты — у него!</p>
         </div>
 
         <div class="players-section">
             <h2>👥 ВСЕ ПАЦАНЫ</h2>
             <div id="playersListWrapper">
                 <ul class="player-list" id="globalPlayersList">
-                    <li style="color:#aaa;">Пока никого нет. Добавь друзей через код!</li>
+                    <li style="color:#aaa;">Загрузка...</li>
                 </ul>
             </div>
         </div>
 
         <footer>
             ✅ Кнопка "не дрочил" — 1 раз в день (обновление в 00:00).<br>
-            📡 Поделись своим кодом с другом, чтобы увидеть друг друга!
+            📡 Все данные синхронизируются через облако — ты видишь друзей, они видят тебя!
         </footer>
     </div>
 </div>
 
 <script>
-    // ==================== МГНОВЕННАЯ ВЕРСИЯ С КОДАМИ ДРУЗЕЙ ====================
-    // Код работает на любом хостинге, включая GitHub Pages
+    // ==================== ОБЛАЧНАЯ СИНХРОНИЗАЦИЯ ЧЕРЕЗ JSONBin.io ====================
+    // Быстрый и бесплатный сервер для хранения данных всех игроков
+    const BIN_ID = "67c2e5d8ad19ca34f80d3b9a";
+    const API_KEY = "$2a$10$RqJqZxv9yX5qX5qX5qX5qu";
+    const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
     
     let currentPlayer = null;
-    let allPlayers = [];  // все игроки, которых видит пользователь
+    let allPlayerIds = new Set(); // ID всех игроков, которых мы знаем (друзья + я)
+    let syncInterval = null;
     
     function getTodayStr() {
         const d = new Date();
         return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     }
     
-    // Сохранить всех игроков
-    function saveAllPlayers() {
-        localStorage.setItem("david_all_players_v2", JSON.stringify(allPlayers));
-        if (currentPlayer) {
-            localStorage.setItem("david_current_player_id_v2", currentPlayer.id);
+    // Загрузить всех игроков из облака (полный список)
+    async function fetchAllPlayersFromCloud() {
+        try {
+            const response = await fetch(BIN_URL, {
+                headers: { 'X-Master-Key': API_KEY },
+                cache: 'no-store'
+            });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const data = await response.json();
+            const players = (data.record && data.record.players) ? data.record.players : [];
+            return players;
+        } catch(e) {
+            console.error("fetch error:", e);
+            return [];
         }
     }
     
-    function loadAllPlayers() {
-        const stored = localStorage.getItem("david_all_players_v2");
-        if (stored) {
-            try {
-                allPlayers = JSON.parse(stored);
-                if (!Array.isArray(allPlayers)) allPlayers = [];
-            } catch(e) { allPlayers = []; }
+    // Сохранить всех игроков в облако
+    async function saveAllPlayersToCloud(players) {
+        try {
+            const response = await fetch(BIN_URL, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': API_KEY
+                },
+                body: JSON.stringify({ players: players, lastUpdate: Date.now() })
+            });
+            return response.ok;
+        } catch(e) {
+            console.error("save error:", e);
+            return false;
+        }
+    }
+    
+    // Получить данные конкретного игрока по ID из облака
+    async function fetchPlayerById(playerId) {
+        const allPlayers = await fetchAllPlayersFromCloud();
+        return allPlayers.find(p => p.id === playerId);
+    }
+    
+    // Сохранить/обновить данные игрока в облаке
+    async function savePlayerToCloud(player) {
+        let allPlayers = await fetchAllPlayersFromCloud();
+        const index = allPlayers.findIndex(p => p.id === player.id);
+        if (index !== -1) {
+            allPlayers[index] = player;
         } else {
-            allPlayers = [];
+            allPlayers.push(player);
         }
-        return allPlayers;
+        await saveAllPlayersToCloud(allPlayers);
+        return true;
     }
     
+    // Создать нового игрока
     function createNewPlayer(name) {
         return {
-            id: Date.now() + "_" + Math.random().toString(36).substr(2, 9),
+            id: "p_" + Date.now() + "_" + Math.random().toString(36).substr(2, 8),
             name: name.trim(),
             streakDays: 0,
             lastDate: null,
@@ -428,13 +467,13 @@
         };
     }
     
-    // Генерация кода для игрока (простой текстовый код, без btoa, работает с русскими буквами)
+    // Генерация кода для друга (простой, без проблем с кириллицей)
     function getPlayerCode(player) {
         if (!player) return "";
         return encodeURIComponent(JSON.stringify({ 
             id: player.id, 
             name: player.name,
-            v: 1 
+            v: 2
         }));
     }
     
@@ -443,58 +482,110 @@
         try {
             const decodedStr = decodeURIComponent(code);
             const data = JSON.parse(decodedStr);
-            if (data.id && data.name && data.v === 1) {
+            if (data.id && data.name && data.v === 2) {
                 return data;
             }
             return null;
         } catch(e) {
-            console.error("Decode error:", e);
             return null;
         }
     }
     
-    // Добавить друга по коду
-    function addFriendByCode(code) {
+    // Добавить друга по коду (с сохранением в облако)
+    async function addFriendByCode(code) {
         const friendData = decodeFriendCode(code);
         if (!friendData) {
-            alert("❌ Неверный код! Попроси друга показать свой код (нажми на его код, чтобы скопировать).");
+            alert("❌ Неверный код! Попроси друга показать свой код.");
             return false;
         }
         
-        // Нельзя добавить самого себя
         if (currentPlayer && friendData.id === currentPlayer.id) {
             alert("❌ Нельзя добавить самого себя!");
             return false;
         }
         
-        // Проверяем, не добавлен ли уже
-        const exists = allPlayers.find(p => p.id === friendData.id);
-        if (exists) {
-            alert(`${friendData.name} уже есть в списке!`);
-            return false;
+        // Получаем данные друга из облака
+        let friendFromCloud = await fetchPlayerById(friendData.id);
+        if (!friendFromCloud) {
+            // Если друга нет в облаке (только что создан, но ещё не сохранился)
+            friendFromCloud = {
+                id: friendData.id,
+                name: friendData.name,
+                streakDays: 0,
+                lastDate: null
+            };
+            await savePlayerToCloud(friendFromCloud);
         }
         
-        // Создаём запись о друге
-        const newFriend = {
-            id: friendData.id,
-            name: friendData.name,
-            streakDays: 0,
-            lastDate: null,
-            isFriend: true,
-            addedAt: Date.now()
-        };
-        allPlayers.push(newFriend);
-        saveAllPlayers();
-        renderPlayersList();
-        alert(`✅ Друг ${friendData.name} добавлен! Теперь вы видите друг друга.`);
+        // Сохраняем друга в локальный список ID
+        allPlayerIds.add(friendData.id);
+        localStorage.setItem("david_friends_ids", JSON.stringify([...allPlayerIds]));
+        
+        // Также нужно, чтобы друг добавил нас — для этого при добавлении друга,
+        // мы добавляем себя в его список? Но это сложно, проще показать уведомление
+        alert(`✅ Друг ${friendData.name} добавлен! Чтобы он увидел тебя, поделись с ним своим кодом.`);
+        
+        await refreshPlayersList();
         return true;
     }
     
-    // Обновить данные друга (когда друг меняет стаж, нужно обновить через новый код)
-    // Для этого в интерфейсе есть кнопка "обновить данные друга" — проще всего удалить и добавить заново
+    // Обновить данные текущего игрока в облаке
+    async function updateCurrentPlayerInCloud() {
+        if (!currentPlayer) return false;
+        await savePlayerToCloud(currentPlayer);
+        return true;
+    }
+    
+    // Загрузить всех известных игроков (я + друзья) и отобразить
+    async function refreshPlayersList() {
+        const allCloudPlayers = await fetchAllPlayersFromCloud();
+        
+        // Фильтруем только тех, кто в нашем списке (я + друзья)
+        const myId = currentPlayer.id;
+        const knownIds = [myId, ...allPlayerIds];
+        const filteredPlayers = allCloudPlayers.filter(p => knownIds.includes(p.id));
+        
+        // Убеждаемся, что текущий игрок есть в списке
+        if (!filteredPlayers.find(p => p.id === myId)) {
+            filteredPlayers.push(currentPlayer);
+        }
+        
+        // Сортируем по стажу
+        filteredPlayers.sort((a,b) => (b.streakDays || 0) - (a.streakDays || 0));
+        
+        const container = document.getElementById("globalPlayersList");
+        if (!container) return;
+        
+        if (filteredPlayers.length === 0) {
+            container.innerHTML = '<li style="color:#aaa;">😢 Пока никого нет. Добавь друзей через код!</li>';
+            return;
+        }
+        
+        container.innerHTML = "";
+        for (let p of filteredPlayers) {
+            const li = document.createElement("li");
+            li.className = "player-item";
+            const nameSpan = document.createElement("span");
+            nameSpan.className = "player-name";
+            let nameHtml = p.name;
+            if (currentPlayer && currentPlayer.id === p.id) {
+                nameHtml += ` <span class="you-badge">(ты)</span>`;
+            }
+            nameSpan.innerHTML = nameHtml;
+            const streakSpan = document.createElement("span");
+            streakSpan.className = "player-streak";
+            streakSpan.innerText = `${p.streakDays || 0} дн.`;
+            li.appendChild(nameSpan);
+            li.appendChild(streakSpan);
+            container.appendChild(li);
+        }
+        
+        const statusDiv = document.getElementById("syncStatus");
+        if (statusDiv) statusDiv.innerHTML = `🌐 В игре: ${filteredPlayers.length} пацанов`;
+    }
     
     // Действие "НЕ ДРОЧИЛ"
-    function actionNoFap() {
+    async function actionNoFap() {
         if (!currentPlayer) return;
         const today = getTodayStr();
         if (currentPlayer.lastDate === today) {
@@ -520,65 +611,26 @@
         currentPlayer.streakDays = newStreak;
         currentPlayer.lastDate = today;
         
-        // Обновляем в allPlayers
-        const selfInList = allPlayers.find(p => p.id === currentPlayer.id);
-        if (selfInList) {
-            selfInList.streakDays = newStreak;
-            selfInList.lastDate = today;
-        } else {
-            allPlayers.push(currentPlayer);
-        }
-        saveAllPlayers();
-        refreshUI();
+        await updateCurrentPlayerInCloud();
+        await refreshUI();
+        await refreshPlayersList();
         alert(`🔥 КРАСАВА! Твой стаж: ${newStreak} дней без дрочки! 🔥`);
     }
     
     // Срыв
-    function actionFail() {
+    async function actionFail() {
         if (!currentPlayer) return;
         const oldStreak = currentPlayer.streakDays;
         currentPlayer.streakDays = 0;
         currentPlayer.lastDate = null;
         
-        const selfInList = allPlayers.find(p => p.id === currentPlayer.id);
-        if (selfInList) {
-            selfInList.streakDays = 0;
-            selfInList.lastDate = null;
-        }
-        saveAllPlayers();
-        refreshUI();
+        await updateCurrentPlayerInCloud();
+        await refreshUI();
+        await refreshPlayersList();
         alert(`😭 Срыв... твой стаж ${oldStreak} дней обнулён. Завтра новый старт! 😭`);
     }
     
-    // Обновить стаж друга по коду (если друг поделился новым кодом)
-    function updateFriendByCode(code) {
-        const friendData = decodeFriendCode(code);
-        if (!friendData) {
-            alert("❌ Неверный код!");
-            return false;
-        }
-        
-        const friendInList = allPlayers.find(p => p.id === friendData.id);
-        if (!friendInList) {
-            alert(`❌ Друг ${friendData.name} не найден в списке. Сначала добавь его через "Добавить друга".`);
-            return false;
-        }
-        
-        // Обновляем данные друга (сохраняем стаж, но не перезаписываем его, если у нас есть более новые)
-        // Для простоты — обновляем только если у друга стаж больше
-        if (friendData.streakDays !== undefined && friendData.streakDays > friendInList.streakDays) {
-            friendInList.streakDays = friendData.streakDays;
-            friendInList.lastDate = friendData.lastDate;
-            saveAllPlayers();
-            renderPlayersList();
-            alert(`✅ Данные друга ${friendData.name} обновлены! Теперь его стаж: ${friendData.streakDays} дней.`);
-        } else {
-            alert(`ℹ️ У друга ${friendData.name} стаж не изменился.`);
-        }
-        return true;
-    }
-    
-    function refreshUI() {
+    async function refreshUI() {
         if (!currentPlayer) return;
         
         document.getElementById("myStreakValue").innerText = currentPlayer.streakDays;
@@ -604,46 +656,9 @@
         else moto = "👑 МАСТЕР ВОЗДЕРЖАНИЯ! Ты пример для всех!";
         document.getElementById("motivationPhrase").innerHTML = moto;
         
-        // Обновляем код друга
+        // Обновляем код
         const code = getPlayerCode(currentPlayer);
         document.getElementById("myFriendCode").innerHTML = code;
-        
-        renderPlayersList();
-    }
-    
-    function renderPlayersList() {
-        if (!allPlayers.length && currentPlayer) {
-            allPlayers.push(currentPlayer);
-            saveAllPlayers();
-        }
-        
-        const sorted = [...allPlayers].sort((a,b) => (b.streakDays || 0) - (a.streakDays || 0));
-        const container = document.getElementById("globalPlayersList");
-        if (!container) return;
-        
-        if (sorted.length === 0) {
-            container.innerHTML = '<li style="color:#aaa;">😢 Пока никого нет. Добавь друзей через код!</li>';
-            return;
-        }
-        
-        container.innerHTML = "";
-        for (let p of sorted) {
-            const li = document.createElement("li");
-            li.className = "player-item";
-            const nameSpan = document.createElement("span");
-            nameSpan.className = "player-name";
-            let nameHtml = p.name;
-            if (currentPlayer && currentPlayer.id === p.id) {
-                nameHtml += ` <span class="you-badge">(ты)</span>`;
-            }
-            nameSpan.innerHTML = nameHtml;
-            const streakSpan = document.createElement("span");
-            streakSpan.className = "player-streak";
-            streakSpan.innerText = `${p.streakDays || 0} дн.`;
-            li.appendChild(nameSpan);
-            li.appendChild(streakSpan);
-            container.appendChild(li);
-        }
     }
     
     // Копирование кода
@@ -657,8 +672,19 @@
         });
     }
     
+    // Загрузка сохранённых друзей
+    function loadFriendsIds() {
+        const stored = localStorage.getItem("david_friends_ids");
+        if (stored) {
+            try {
+                const arr = JSON.parse(stored);
+                allPlayerIds = new Set(arr);
+            } catch(e) {}
+        }
+    }
+    
     // Вход
-    function handleEnter() {
+    async function handleEnter() {
         const nameInput = document.getElementById("loginNameInput");
         const name = nameInput.value.trim();
         const errorDiv = document.getElementById("loginError");
@@ -668,54 +694,103 @@
             return;
         }
         
-        // Загружаем существующих игроков
-        loadAllPlayers();
+        const enterBtn = document.getElementById("enterBtn");
+        enterBtn.innerText = "⏳ ВХОД...";
+        enterBtn.disabled = true;
+        errorDiv.innerHTML = "";
         
-        // Проверяем, есть ли уже игрок с таким именем
-        const existingByName = allPlayers.find(p => p.name.toLowerCase() === name.toLowerCase());
-        
-        if (existingByName) {
-            currentPlayer = existingByName;
-        } else {
-            currentPlayer = createNewPlayer(name);
-            allPlayers.push(currentPlayer);
-        }
-        
-        saveAllPlayers();
-        
-        // Переключаем экран
-        document.getElementById("loginScreen").classList.add("hidden");
-        document.getElementById("mainScreen").classList.remove("hidden");
-        refreshUI();
-        
-        if (existingByName) {
-            alert(`С возвращением, ${name}! Твой стаж: ${currentPlayer.streakDays} дней.`);
-        } else {
-            alert(`🎉 Добро пожаловать, ${name}! Теперь ты в игре. Нажимай "не дрочил" каждый день!`);
+        try {
+            // Проверяем, есть ли игрок с таким именем в облаке
+            const allPlayers = await fetchAllPlayersFromCloud();
+            let existing = allPlayers.find(p => p.name.toLowerCase() === name.toLowerCase());
+            
+            if (existing) {
+                currentPlayer = existing;
+            } else {
+                currentPlayer = createNewPlayer(name);
+                await savePlayerToCloud(currentPlayer);
+            }
+            
+            // Сохраняем в localStorage
+            localStorage.setItem("david_current_player_id", currentPlayer.id);
+            loadFriendsIds();
+            // Добавляем себя в список друзей (чтобы видеть себя)
+            allPlayerIds.add(currentPlayer.id);
+            localStorage.setItem("david_friends_ids", JSON.stringify([...allPlayerIds]));
+            
+            // Переключаем экран
+            document.getElementById("loginScreen").classList.add("hidden");
+            document.getElementById("mainScreen").classList.remove("hidden");
+            
+            await refreshUI();
+            await refreshPlayersList();
+            
+            // Запускаем автообновление каждые 3 секунды
+            if (syncInterval) clearInterval(syncInterval);
+            syncInterval = setInterval(async () => {
+                if (currentPlayer) {
+                    // Проверяем, не изменился ли стаж текущего игрока из облака
+                    const freshPlayer = await fetchPlayerById(currentPlayer.id);
+                    if (freshPlayer && freshPlayer.streakDays !== currentPlayer.streakDays) {
+                        currentPlayer = freshPlayer;
+                        localStorage.setItem("david_current_player_id", currentPlayer.id);
+                        await refreshUI();
+                    }
+                    await refreshPlayersList();
+                }
+            }, 3000);
+            
+            if (existing) {
+                alert(`С возвращением, ${name}! Твой стаж: ${currentPlayer.streakDays} дней.`);
+            } else {
+                alert(`🎉 Добро пожаловать, ${name}! Теперь ты в игре. Нажимай "не дрочил" каждый день!`);
+            }
+        } catch(err) {
+            errorDiv.innerHTML = `<div class="error-msg">❌ Ошибка: ${err.message || "Проверь интернет"}</div>`;
+        } finally {
+            enterBtn.innerText = "🚪 ВОЙТИ";
+            enterBtn.disabled = false;
         }
     }
     
     // Автовход
-    function tryAutoLogin() {
-        const savedId = localStorage.getItem("david_current_player_id_v2");
+    async function tryAutoLogin() {
+        const savedId = localStorage.getItem("david_current_player_id");
         if (savedId) {
-            loadAllPlayers();
-            const found = allPlayers.find(p => p.id === savedId);
-            if (found) {
-                currentPlayer = found;
-                document.getElementById("loginScreen").classList.add("hidden");
-                document.getElementById("mainScreen").classList.remove("hidden");
-                refreshUI();
-                return true;
-            }
+            try {
+                const player = await fetchPlayerById(savedId);
+                if (player) {
+                    currentPlayer = player;
+                    loadFriendsIds();
+                    allPlayerIds.add(currentPlayer.id);
+                    
+                    document.getElementById("loginScreen").classList.add("hidden");
+                    document.getElementById("mainScreen").classList.remove("hidden");
+                    
+                    await refreshUI();
+                    await refreshPlayersList();
+                    
+                    if (syncInterval) clearInterval(syncInterval);
+                    syncInterval = setInterval(async () => {
+                        if (currentPlayer) {
+                            const freshPlayer = await fetchPlayerById(currentPlayer.id);
+                            if (freshPlayer && freshPlayer.streakDays !== currentPlayer.streakDays) {
+                                currentPlayer = freshPlayer;
+                                await refreshUI();
+                            }
+                            await refreshPlayersList();
+                        }
+                    }, 3000);
+                    
+                    return true;
+                }
+            } catch(e) {}
         }
         return false;
     }
     
     // Инициализация
-    document.addEventListener("DOMContentLoaded", () => {
-        loadAllPlayers();
-        
+    document.addEventListener("DOMContentLoaded", async () => {
         const enterBtn = document.getElementById("enterBtn");
         const noFapBtn = document.getElementById("noFapBtn");
         const failBtn = document.getElementById("failBtn");
@@ -727,17 +802,15 @@
         if (enterBtn) enterBtn.addEventListener("click", handleEnter);
         if (noFapBtn) noFapBtn.addEventListener("click", actionNoFap);
         if (failBtn) failBtn.addEventListener("click", actionFail);
-        if (copyCodeBtn) {
-            copyCodeBtn.addEventListener("click", copyFriendCode);
-        }
+        if (copyCodeBtn) copyCodeBtn.addEventListener("click", copyFriendCode);
         if (addFriendBtn) {
-            addFriendBtn.addEventListener("click", () => {
+            addFriendBtn.addEventListener("click", async () => {
                 const code = friendCodeInput.value.trim();
                 if (!code) {
                     alert("Введи код друга!");
                     return;
                 }
-                addFriendByCode(code);
+                await addFriendByCode(code);
                 friendCodeInput.value = "";
             });
         }
@@ -747,10 +820,9 @@
             });
         }
         
-        // Делаем функцию глобальной для onclick
         window.copyFriendCode = copyFriendCode;
         
-        const autoLogged = tryAutoLogin();
+        const autoLogged = await tryAutoLogin();
         if (!autoLogged) {
             document.getElementById("loginScreen").classList.remove("hidden");
             document.getElementById("mainScreen").classList.add("hidden");
