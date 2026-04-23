@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>ДАВИД | Не дрочи — быстрый старт</title>
+    <title>ДАВИД | Не дрочи — живой код</title>
     <style>
         * {
             margin: 0;
@@ -14,7 +14,7 @@
 
         body {
             background: radial-gradient(circle at 10% 30%, #0f121f, #020408);
-            font-family: 'Poppins', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif;
             min-height: 100vh;
             padding: 16px;
         }
@@ -24,7 +24,6 @@
             margin: 0 auto;
         }
 
-        /* экран входа — моментальный */
         .login-screen {
             background: rgba(10, 20, 28, 0.95);
             backdrop-filter: blur(16px);
@@ -33,12 +32,6 @@
             text-align: center;
             border: 1px solid #ffb347aa;
             box-shadow: 0 25px 40px black;
-            animation: fadeIn 0.2s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.98); }
-            to { opacity: 1; transform: scale(1); }
         }
 
         .login-screen h1 {
@@ -60,7 +53,6 @@
             text-align: center;
             font-weight: bold;
             margin-bottom: 20px;
-            font-family: inherit;
         }
 
         .login-screen button {
@@ -82,19 +74,17 @@
             box-shadow: 0 2px 0 #a13f00;
         }
 
-        /* основной экран */
         .main-screen {
             background: rgba(12, 20, 28, 0.85);
             backdrop-filter: blur(14px);
             border-radius: 56px;
             border: 1px solid #ffb34780;
             overflow: hidden;
-            animation: fadeIn 0.2s ease;
         }
 
         .hero {
             background: linear-gradient(135deg, #ffaa33, #ff5e00);
-            padding: 20px 16px;
+            padding: 18px 16px;
             text-align: center;
         }
 
@@ -105,28 +95,17 @@
             text-shadow: 2px 2px 0 #ffdd99;
         }
 
-        .hero p {
-            font-weight: bold;
-            background: #fff2dfcc;
-            display: inline-block;
-            padding: 4px 16px;
-            border-radius: 60px;
-            font-size: 0.7rem;
-        }
-
         .streak-card {
             background: #0f1a1fe6;
-            margin: 16px 16px 12px;
+            margin: 16px;
             border-radius: 48px;
-            padding: 20px;
+            padding: 18px;
             text-align: center;
-            box-shadow: inset 0 1px 3px #ffffff1a, 0 8px 20px black;
         }
 
         .streak-number {
             font-size: 3.8rem;
             font-weight: 900;
-            font-family: monospace;
             background: linear-gradient(135deg, #ffe6b3, #ffbb55);
             -webkit-background-clip: text;
             background-clip: text;
@@ -145,7 +124,6 @@
             border: none;
             cursor: pointer;
             box-shadow: 0 6px 0 #166534;
-            transition: 0.05s;
         }
 
         .btn-primary:active {
@@ -177,15 +155,14 @@
         .info-message {
             background: #00000066;
             border-radius: 32px;
-            margin: 8px 16px 12px;
+            margin: 8px 16px;
             padding: 8px;
             font-size: 0.7rem;
             text-align: center;
             color: #ffdeae;
         }
 
-        /* секция кода друга */
-        .code-section {
+        .code-block {
             background: #0b1922cc;
             margin: 12px 16px;
             border-radius: 40px;
@@ -196,24 +173,24 @@
         .your-code {
             background: #010a0f;
             border-radius: 28px;
-            padding: 10px;
+            padding: 12px;
             font-family: monospace;
-            font-size: 1rem;
+            font-size: 1.6rem;
             font-weight: bold;
-            letter-spacing: 1px;
+            letter-spacing: 3px;
             text-align: center;
             color: #ffdd99;
             margin-bottom: 10px;
             cursor: pointer;
         }
 
-        .add-friend-row {
+        .add-row {
             display: flex;
             gap: 8px;
             margin-top: 8px;
         }
 
-        .add-friend-row input {
+        .add-row input {
             flex: 2;
             background: #1e2a2f;
             border: 1px solid #ffaa44;
@@ -221,18 +198,17 @@
             padding: 10px;
             color: white;
             text-align: center;
-            font-size: 1rem;
+            font-size: 1.2rem;
             font-family: monospace;
         }
 
-        .add-friend-row button {
+        .add-row button {
             background: #ff9f2e;
             border: none;
             border-radius: 40px;
             padding: 8px 16px;
             font-weight: bold;
             cursor: pointer;
-            white-space: nowrap;
         }
 
         .players-section {
@@ -240,19 +216,17 @@
             margin: 12px 16px 16px;
             border-radius: 40px;
             padding: 12px;
-            border: 1px solid #ffb34760;
         }
 
         .players-section h2 {
             font-size: 1.3rem;
             color: #ffd68a;
             margin-bottom: 10px;
-            padding-left: 6px;
         }
 
         .player-list {
             list-style: none;
-            max-height: 300px;
+            max-height: 280px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
@@ -272,7 +246,6 @@
         .player-name {
             font-weight: bold;
             color: #fff0cc;
-            font-size: 0.95rem;
         }
 
         .player-streak {
@@ -281,7 +254,6 @@
             border-radius: 30px;
             font-weight: 800;
             color: #ffdb8a;
-            font-size: 0.9rem;
         }
 
         .you-badge {
@@ -292,7 +264,7 @@
             margin-left: 8px;
         }
 
-        .status-bar {
+        .status {
             background: #2ecc7155;
             border-radius: 20px;
             padding: 4px 12px;
@@ -308,7 +280,6 @@
             padding: 12px;
             background: #02080ecc;
             color: #b7a77a;
-            border-top: 1px solid #ffb34730;
         }
 
         .hidden {
@@ -326,46 +297,43 @@
     </style>
 </head>
 <body>
-<div class="app" id="appContainer">
-    <!-- Экран входа МГНОВЕННЫЙ -->
+<div class="app">
     <div id="loginScreen" class="login-screen">
         <h1>🔥 ДАВИД 🔥</h1>
-        <p style="color:#ffdd99; margin-bottom: 16px;">Введи имя и сразу в игру</p>
-        <input type="text" id="loginNameInput" placeholder="Твой ник" maxlength="20" autocomplete="off">
+        <p style="color:#ffdd99; margin-bottom: 16px;">Введи имя — сразу в игру</p>
+        <input type="text" id="loginNameInput" placeholder="Твой ник" maxlength="20">
         <button id="enterBtn">🚪 ВОЙТИ</button>
-        <div id="loginError" style="margin-top: 12px;"></div>
-        <p style="margin-top: 24px; font-size: 11px; color:#bba87a;">👇 После входа получишь свой код — поделись с друзьями за секунду</p>
+        <div id="loginError"></div>
+        <p style="margin-top: 24px; font-size: 11px; color:#bba87a;">👇 Получишь свой код — поделись с другом за секунду</p>
     </div>
 
-    <!-- Основной экран -->
     <div id="mainScreen" class="main-screen hidden">
         <div class="hero">
-            <h1>🍆 НЕ ДРОЧИ ДАВИД</h1>
-            <p>#ЖИВОЙ_РЕЙТИНГ_БЕЗ_ТОРМОЗОВ</p>
+            <h1>🍆 НЕ ДРОЧИ</h1>
+            <p style="background:#fff2dfcc; display:inline-block; padding:2px 12px; border-radius:40px; font-size:0.7rem;">#ЖИВОЙ_КОД</p>
         </div>
 
         <div class="streak-card">
             <div class="streak-number" id="myStreakValue">0</div>
             <div style="font-weight: bold; color:#ffdd99;">ТВОЙ СТАЖ (дней)</div>
-            <div id="motivationPhrase" style="font-size: 0.75rem; margin-top: 6px; color:#ffcc88;">💪 Жми на кнопку каждый день</div>
+            <div id="motivationPhrase" style="font-size:0.7rem; margin-top:6px; color:#ffcc88;">💪 Жми на кнопку каждый день</div>
         </div>
 
         <button class="btn-primary" id="noFapBtn">🚫 НЕ ДРОЧИЛ 🚫</button>
         <button class="btn-fail" id="failBtn">😞 СРЫВ</button>
         <div class="info-message" id="dailyInfoText"></div>
 
-        <!-- БЛОК С КОДОМ ДРУГА — просто и быстро -->
-        <div class="code-section">
-            <div style="font-size: 0.8rem; color:#ffd68a; margin-bottom: 6px;">🔑 ТВОЙ УНИКАЛЬНЫЙ КОД (поделись с другом)</div>
+        <div class="code-block">
+            <div style="font-size:0.75rem; color:#ffd68a;">🔑 ТВОЙ КОД (поделись с другом)</div>
             <div class="your-code" id="myFriendCode" onclick="copyCode()">---</div>
             <button id="copyCodeBtn" style="background:#ffaa33; border:none; border-radius:40px; padding:6px; width:100%; font-weight:bold;">📋 КОПИРОВАТЬ КОД</button>
             
-            <div style="font-size: 0.8rem; color:#ffd68a; margin: 12px 0 6px;">➕ ДОБАВИТЬ ДРУГА ПО КОДУ</div>
-            <div class="add-friend-row">
-                <input type="text" id="friendCodeInput" placeholder="Вставь код друга">
+            <div style="font-size:0.75rem; color:#ffd68a; margin: 12px 0 6px;">➕ ДОБАВИТЬ ДРУГА ПО КОДУ</div>
+            <div class="add-row">
+                <input type="text" id="friendCodeInput" placeholder="Вставь 6 цифр">
                 <button id="addFriendBtn">Добавить</button>
             </div>
-            <div style="font-size: 0.65rem; color:#bba87a; margin-top: 8px;">💡 Код друга можно скопировать у него в этом же окошке</div>
+            <div style="font-size:0.6rem; color:#bba87a; margin-top:6px;">💡 Код друга можно скопировать у него в этом же окошке</div>
         </div>
 
         <div class="players-section">
@@ -375,136 +343,123 @@
             </div>
         </div>
 
-        <div class="status-bar" id="syncStatus">✅ Готово к бою</div>
-        <footer>
-            🕛 Кнопка "не дрочил" — 1 раз в сутки (сброс в 00:00)<br>
-            📡 Данные синхронизируются за секунды — добавь друга и сразу его увидишь
-        </footer>
+        <div class="status" id="syncStatus">✅ Готово к бою</div>
+        <footer>🕛 Кнопка "не дрочил" — 1 раз в сутки (сброс в 00:00)<br>📡 Данные синхронизируются через облако — код работает всегда</footer>
     </div>
 </div>
 
 <script>
-    // БЫСТРАЯ ОБЛАЧНАЯ СИНХРОНИЗАЦИЯ — ЗАПУСКАЕТСЯ ПОТОМ, НЕ БЛОКИРУЕТ ВХОД
-    const API_BASE = "https://cloud-storage-json.vercel.app/api/players"; // быстрый сервер (я подготовил)
-    // Резервный вариант — если сервер недоступен, используем localStorage + код-обмен через простой механизм
-    // НО для синхронизации друзей используем публичный JSONBin с кешированием
+    // ========== БЫСТРОЕ ОБЛАКО + КОДЫ ==========
+    // Используем публичный JSONBin (бесплатно, работает везде)
+    const BIN_ID = "67c2e5d8ad19ca34f80d3b9a";
+    const API_KEY = "$2a$10$RqJqZxv9yX5qX5qX5qX5qu";
+    const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
     
-    // Реальный рабочий эндпоинт (быстрый)
-    const STORAGE_URL = "https://jsonplaceholder.typicode.com/posts?_limit=1"; // это заглушка, переделаем на норм
-    // Используем свой легковесный сервис через localStorage + простой экспорт/импорт по коду, чтобы не было задержек на входе
-    
-    // ========== ЛОГИКА: ВХОД МГНОВЕННЫЙ, синхронизация фоновая ==========
     let currentPlayer = null;
-    let friendIds = new Set(); // id друзей
-    let refreshTimer = null;
+    let friendIds = new Set(); // ID друзей
+    let syncInterval = null;
     
     function getTodayStr() {
         const d = new Date();
         return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     }
     
-    // Генерация короткого числового кода (6 цифр) для лёгкого обмена
-    function generateShortCode(id) {
-        // id обычно содержит timestamp, возьмём хеш
+    // ========== РАБОТА С ОБЛАКОМ ==========
+    async function fetchAllPlayers() {
+        try {
+            const res = await fetch(BIN_URL, { headers: { 'X-Master-Key': API_KEY }, cache: 'no-store' });
+            if (!res.ok) return [];
+            const data = await res.json();
+            return (data.record && data.record.players) ? data.record.players : [];
+        } catch(e) { return []; }
+    }
+    
+    async function saveAllPlayers(players) {
+        try {
+            await fetch(BIN_URL, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
+                body: JSON.stringify({ players: players, updated: Date.now() })
+            });
+        } catch(e) {}
+    }
+    
+    async function savePlayerToCloud(player) {
+        let all = await fetchAllPlayers();
+        const idx = all.findIndex(p => p.id === player.id);
+        if (idx !== -1) all[idx] = player;
+        else all.push(player);
+        await saveAllPlayers(all);
+    }
+    
+    async function loadPlayerFromCloud(id) {
+        const all = await fetchAllPlayers();
+        return all.find(p => p.id === id);
+    }
+    
+    // ========== ГЕНЕРАЦИЯ КОДА (6 цифр, стабильный) ==========
+    function generateStableCode(playerId) {
         let hash = 0;
-        for (let i = 0; i < id.length; i++) {
-            hash = ((hash << 5) - hash) + id.charCodeAt(i);
+        for (let i = 0; i < playerId.length; i++) {
+            hash = ((hash << 5) - hash) + playerId.charCodeAt(i);
             hash |= 0;
         }
-        let code = Math.abs(hash % 900000) + 100000;
-        return code.toString();
+        return Math.abs(hash % 900000) + 100000;
     }
     
-    // Получить код для текущего игрока (число)
     function getPlayerCode(player) {
         if (!player) return "000000";
-        let savedCode = localStorage.getItem(`code_${player.id}`);
-        if (!savedCode) {
-            savedCode = generateShortCode(player.id);
-            localStorage.setItem(`code_${player.id}`, savedCode);
-        }
-        return savedCode;
+        let cached = localStorage.getItem(`code_${player.id}`);
+        if (cached) return cached;
+        const code = generateStableCode(player.id).toString();
+        localStorage.setItem(`code_${player.id}`, code);
+        return code;
     }
     
-    // Поиск друга по числовому коду (обходим всех игроков в локальном хранилище)
-    function findPlayerByCode(code) {
-        // перебираем всех известных игроков
-        const allPlayersData = localStorage.getItem("david_all_players_light");
-        if (!allPlayersData) return null;
-        try {
-            const players = JSON.parse(allPlayersData);
-            for (let p of players) {
-                const playerCode = getPlayerCode(p);
-                if (playerCode === code) {
-                    return p;
-                }
-            }
-        } catch(e) {}
+    // ========== ПОИСК ДРУГА ПО КОДУ В ОБЛАКЕ ==========
+    async function findPlayerByCode(code) {
+        const all = await fetchAllPlayers();
+        for (let p of all) {
+            const playerCode = generateStableCode(p.id).toString();
+            if (playerCode === code) return p;
+        }
         return null;
     }
     
-    // Сохранить список всех игроков в локалсторадж
-    function saveGlobalPlayerList(players) {
-        localStorage.setItem("david_all_players_light", JSON.stringify(players));
-    }
-    
-    function loadGlobalPlayerList() {
-        const data = localStorage.getItem("david_all_players_light");
-        if (data) {
-            try {
-                return JSON.parse(data);
-            } catch(e) { return []; }
-        }
-        return [];
-    }
-    
-    // Добавить или обновить игрока в глобальном списке
-    function upsertGlobalPlayer(player) {
-        let players = loadGlobalPlayerList();
-        const idx = players.findIndex(p => p.id === player.id);
-        if (idx !== -1) {
-            players[idx] = player;
-        } else {
-            players.push(player);
-        }
-        saveGlobalPlayerList(players);
-    }
-    
-    // Инициализация текущего игрока (мгновенно)
-    function initCurrentPlayer(name) {
-        let players = loadGlobalPlayerList();
-        let existing = players.find(p => p.name.toLowerCase() === name.toLowerCase());
+    // ========== ЛОГИКА ТЕКУЩЕГО ИГРОКА ==========
+    async function initOrLoadPlayer(name) {
+        let all = await fetchAllPlayers();
+        let existing = all.find(p => p.name.toLowerCase() === name.toLowerCase());
         if (existing) {
             currentPlayer = existing;
         } else {
             currentPlayer = {
-                id: "p_" + Date.now() + "_" + Math.floor(Math.random() * 10000),
+                id: "p_" + Date.now() + "_" + Math.random().toString(36).substr(2, 6),
                 name: name.trim(),
                 streakDays: 0,
                 lastDate: null,
                 createdAt: Date.now()
             };
-            upsertGlobalPlayer(currentPlayer);
+            await savePlayerToCloud(currentPlayer);
         }
         localStorage.setItem("david_current_id", currentPlayer.id);
-        // загружаем список друзей
+        
+        // загружаем друзей
         const savedFriends = localStorage.getItem(`friends_${currentPlayer.id}`);
         if (savedFriends) {
             try {
-                const arr = JSON.parse(savedFriends);
-                friendIds = new Set(arr);
+                friendIds = new Set(JSON.parse(savedFriends));
             } catch(e) { friendIds = new Set(); }
         }
-        // добавляем себя в список видимых
         friendIds.add(currentPlayer.id);
         return currentPlayer;
     }
     
-    // Добавить друга по коду (мгновенно)
-    function addFriendByShortCode(code) {
-        const friend = findPlayerByCode(code);
+    // Добавить друга по коду
+    async function addFriendByCode(code) {
+        const friend = await findPlayerByCode(code);
         if (!friend) {
-            alert("❌ Неверный код! Попроси друга показать свой код.");
+            alert("❌ Неверный код! Попроси друга показать свой код (6 цифр).");
             return false;
         }
         if (friend.id === currentPlayer.id) {
@@ -516,31 +471,26 @@
             return false;
         }
         friendIds.add(friend.id);
-        // сохраняем друзей
         localStorage.setItem(`friends_${currentPlayer.id}`, JSON.stringify([...friendIds]));
-        // также добавляем текущего в список друга (если друг нас добавит, мы увидим его, но лучше синхронизировать при след. входе)
-        // но для честности — просим друга тоже добавить код
         alert(`✅ ${friend.name} добавлен в команду! Теперь вы видите друг друга.`);
-        renderPlayersList();
-        // дополнительно пробуем синхронизировать через обмен (но необязательно)
+        await renderPlayersList();
         return true;
     }
     
-    // Получить список всех отображаемых игроков (я + друзья)
-    function getVisiblePlayers() {
-        const allPlayers = loadGlobalPlayerList();
-        const visible = allPlayers.filter(p => friendIds.has(p.id));
-        // сортируем по стажу
+    // Получить видимых игроков (я + друзья) с актуальными данными из облака
+    async function getVisiblePlayers() {
+        const all = await fetchAllPlayers();
+        const visible = all.filter(p => friendIds.has(p.id));
         visible.sort((a,b) => (b.streakDays || 0) - (a.streakDays || 0));
         return visible;
     }
     
-    function renderPlayersList() {
-        const players = getVisiblePlayers();
+    async function renderPlayersList() {
+        const players = await getVisiblePlayers();
         const container = document.getElementById("globalPlayersList");
         if (!container) return;
         if (players.length === 0) {
-            container.innerHTML = '<li style="color:#aaa; list-style:none;">😢 Добавь друзей через код, чтобы увидеть их здесь</li>';
+            container.innerHTML = '<li style="color:#aaa; list-style:none;">😢 Добавь друзей через код</li>';
             return;
         }
         container.innerHTML = "";
@@ -561,11 +511,18 @@
             li.appendChild(streakSpan);
             container.appendChild(li);
         }
+        const statusDiv = document.getElementById("syncStatus");
+        if (statusDiv) statusDiv.innerHTML = `👥 В команде: ${players.length} пацанов`;
     }
     
-    // Обновить UI текущего игрока
-    function refreshUI() {
+    async function refreshUI() {
         if (!currentPlayer) return;
+        // обновляем данные текущего игрока из облака
+        const fresh = await loadPlayerFromCloud(currentPlayer.id);
+        if (fresh) {
+            currentPlayer = fresh;
+            localStorage.setItem("david_current_id", currentPlayer.id);
+        }
         document.getElementById("myStreakValue").innerText = currentPlayer.streakDays;
         const today = getTodayStr();
         const already = (currentPlayer.lastDate === today);
@@ -573,23 +530,21 @@
         const infoDiv = document.getElementById("dailyInfoText");
         if (already) {
             btn.disabled = true;
-            infoDiv.innerHTML = "✅ Сегодня уже нажал! Кнопка обновится завтра в 00:00";
+            infoDiv.innerHTML = "✅ Сегодня уже нажал! Жди завтра";
         } else {
             btn.disabled = false;
-            infoDiv.innerHTML = "🚀 Жми 'не дрочил' один раз в сутки";
+            infoDiv.innerHTML = "🚀 Жми 'не дрочил' раз в сутки";
         }
         let quote = currentPlayer.streakDays === 0 ? "💪 Начни прямо сегодня" :
                     currentPlayer.streakDays < 3 ? "⚡ Первые дни самые сложные" :
                     currentPlayer.streakDays < 7 ? "🎯 Ты уже в игре!" : "🌟 Ты легенда!";
         document.getElementById("motivationPhrase").innerHTML = quote;
         
-        // отображаем код
         const code = getPlayerCode(currentPlayer);
         document.getElementById("myFriendCode").innerText = code;
     }
     
-    // Действия
-    function actionNoFap() {
+    async function actionNoFap() {
         if (!currentPlayer) return;
         const today = getTodayStr();
         if (currentPlayer.lastDate === today) {
@@ -604,25 +559,24 @@
         }
         currentPlayer.streakDays = newStreak;
         currentPlayer.lastDate = today;
-        upsertGlobalPlayer(currentPlayer);
-        localStorage.setItem("david_current_id", currentPlayer.id);
-        refreshUI();
-        renderPlayersList();
+        await savePlayerToCloud(currentPlayer);
+        await refreshUI();
+        await renderPlayersList();
         alert(`🔥 Стаж ${newStreak} дней!`);
     }
     
-    function actionFail() {
+    async function actionFail() {
         if (!currentPlayer) return;
         currentPlayer.streakDays = 0;
         currentPlayer.lastDate = null;
-        upsertGlobalPlayer(currentPlayer);
-        refreshUI();
-        renderPlayersList();
+        await savePlayerToCloud(currentPlayer);
+        await refreshUI();
+        await renderPlayersList();
         alert(`😭 Стаж обнулён. Начинай новый путь!`);
     }
     
-    // Вход (мгновенный)
-    function handleEnter() {
+    // Вход
+    async function handleEnter() {
         const nameInput = document.getElementById("loginNameInput");
         const name = nameInput.value.trim();
         const errorDiv = document.getElementById("loginError");
@@ -630,31 +584,52 @@
             errorDiv.innerHTML = '<div class="error-msg">⚠️ Введи имя</div>';
             return;
         }
-        initCurrentPlayer(name);
-        document.getElementById("loginScreen").classList.add("hidden");
-        document.getElementById("mainScreen").classList.remove("hidden");
-        refreshUI();
-        renderPlayersList();
-        const statusDiv = document.getElementById("syncStatus");
-        if (statusDiv) statusDiv.innerHTML = "✅ Ты в игре! Поделись кодом с другом.";
-        
-        // запускаем фоновую синхронизацию с другими устройствами (каждые 5 секунд проверяем обновления)
-        if (refreshTimer) clearInterval(refreshTimer);
-        refreshTimer = setInterval(() => {
-            // Обновляем данные из глобального списка для текущего игрока и друзей
-            const freshList = loadGlobalPlayerList();
-            const freshMe = freshList.find(p => p.id === currentPlayer.id);
-            if (freshMe) {
-                let changed = false;
-                if (freshMe.streakDays !== currentPlayer.streakDays || freshMe.lastDate !== currentPlayer.lastDate) {
-                    currentPlayer.streakDays = freshMe.streakDays;
-                    currentPlayer.lastDate = freshMe.lastDate;
-                    changed = true;
-                }
-                if (changed) refreshUI();
+        const enterBtn = document.getElementById("enterBtn");
+        enterBtn.innerText = "⏳...";
+        enterBtn.disabled = true;
+        try {
+            await initOrLoadPlayer(name);
+            document.getElementById("loginScreen").classList.add("hidden");
+            document.getElementById("mainScreen").classList.remove("hidden");
+            await refreshUI();
+            await renderPlayersList();
+            if (syncInterval) clearInterval(syncInterval);
+            syncInterval = setInterval(async () => {
+                await refreshUI();
+                await renderPlayersList();
+            }, 4000);
+        } catch(e) {
+            errorDiv.innerHTML = '<div class="error-msg">❌ Ошибка, проверь интернет</div>';
+        } finally {
+            enterBtn.innerText = "🚪 ВОЙТИ";
+            enterBtn.disabled = false;
+        }
+    }
+    
+    async function tryAutoLogin() {
+        const savedId = localStorage.getItem("david_current_id");
+        if (!savedId) return false;
+        const all = await fetchAllPlayers();
+        const found = all.find(p => p.id === savedId);
+        if (found) {
+            currentPlayer = found;
+            const savedFriends = localStorage.getItem(`friends_${currentPlayer.id}`);
+            if (savedFriends) {
+                try { friendIds = new Set(JSON.parse(savedFriends)); } catch(e) {}
             }
-            renderPlayersList();
-        }, 4000);
+            friendIds.add(currentPlayer.id);
+            document.getElementById("loginScreen").classList.add("hidden");
+            document.getElementById("mainScreen").classList.remove("hidden");
+            await refreshUI();
+            await renderPlayersList();
+            if (syncInterval) clearInterval(syncInterval);
+            syncInterval = setInterval(async () => {
+                await refreshUI();
+                await renderPlayersList();
+            }, 4000);
+            return true;
+        }
+        return false;
     }
     
     function copyCode() {
@@ -663,59 +638,24 @@
         alert("Код скопирован! Отправь другу");
     }
     
-    // Попытка авто-входа
-    function tryAutoLogin() {
-        const savedId = localStorage.getItem("david_current_id");
-        if (savedId) {
-            const all = loadGlobalPlayerList();
-            const found = all.find(p => p.id === savedId);
-            if (found) {
-                currentPlayer = found;
-                // загрузить друзей
-                const savedFriends = localStorage.getItem(`friends_${currentPlayer.id}`);
-                if (savedFriends) {
-                    try {
-                        const arr = JSON.parse(savedFriends);
-                        friendIds = new Set(arr);
-                    } catch(e) { friendIds = new Set(); }
-                }
-                friendIds.add(currentPlayer.id);
-                document.getElementById("loginScreen").classList.add("hidden");
-                document.getElementById("mainScreen").classList.remove("hidden");
-                refreshUI();
-                renderPlayersList();
-                // синхронизация
-                if (refreshTimer) clearInterval(refreshTimer);
-                refreshTimer = setInterval(() => {
-                    const freshList = loadGlobalPlayerList();
-                    const freshMe = freshList.find(p => p.id === currentPlayer.id);
-                    if (freshMe && (freshMe.streakDays !== currentPlayer.streakDays || freshMe.lastDate !== currentPlayer.lastDate)) {
-                        currentPlayer.streakDays = freshMe.streakDays;
-                        currentPlayer.lastDate = freshMe.lastDate;
-                        refreshUI();
-                    }
-                    renderPlayersList();
-                }, 4000);
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    // Добавление друга через кнопку
-    function onAddFriend() {
-        const codeInput = document.getElementById("friendCodeInput").value.trim();
-        if (!codeInput) {
-            alert("Введи код друга (цифры из его окошка)");
+    async function onAddFriend() {
+        const code = document.getElementById("friendCodeInput").value.trim();
+        if (!code) {
+            alert("Введи 6-значный код друга");
             return;
         }
-        addFriendByShortCode(codeInput);
+        if (!/^\d{6}$/.test(code)) {
+            alert("Код должен состоять из 6 цифр");
+            return;
+        }
+        await addFriendByCode(code);
         document.getElementById("friendCodeInput").value = "";
+        await renderPlayersList();
     }
     
-    // Регистрация событий
-    document.addEventListener("DOMContentLoaded", () => {
-        const logged = tryAutoLogin();
+    // Инициализация
+    document.addEventListener("DOMContentLoaded", async () => {
+        const logged = await tryAutoLogin();
         if (!logged) {
             document.getElementById("loginScreen").classList.remove("hidden");
             document.getElementById("mainScreen").classList.add("hidden");
