@@ -1,4 +1,4 @@
-<!<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -21,7 +21,6 @@
             max-width: 550px;
             margin: 0 auto;
         }
-        /* экран входа */
         .login-screen {
             background: rgba(10, 20, 28, 0.95);
             backdrop-filter: blur(16px);
@@ -64,9 +63,9 @@
             cursor: pointer;
             width: 80%;
             box-shadow: 0 5px 0 #a13f00;
+            transition: 0.05s linear;
         }
         .login-screen button:active { transform: translateY(2px); }
-        /* основной экран */
         .main-screen {
             background: rgba(12, 20, 28, 0.85);
             backdrop-filter: blur(14px);
@@ -133,16 +132,16 @@
             text-align: center;
             color: #ffdeae;
         }
-        .search-section {
+        .add-section {
             background: #0b1922cc;
             margin: 12px 16px;
             border-radius: 36px;
             padding: 12px;
             border: 1px solid #ffaa66;
         }
-        .search-section h3 { color: #ffd68a; font-size: 0.85rem; margin-bottom: 8px; }
-        .search-row { display: flex; gap: 8px; }
-        .search-row input {
+        .add-section h3 { color: #ffd68a; font-size: 0.85rem; margin-bottom: 8px; }
+        .add-row { display: flex; gap: 8px; }
+        .add-row input {
             flex: 2;
             background: #1e2a2f;
             border: 1px solid #ffaa44;
@@ -152,7 +151,7 @@
             text-align: center;
             font-size: 0.9rem;
         }
-        .search-row button {
+        .add-row button {
             background: #ff9f2e;
             border: none;
             border-radius: 40px;
@@ -251,7 +250,7 @@
         <input type="text" id="loginNameInput" placeholder="Твой ник" maxlength="20">
         <button id="enterBtn">🚪 ВОЙТИ</button>
         <div id="loginError"></div>
-        <p style="margin-top: 20px; font-size: 11px; color:#bba87a;">👇 Найди друзей по нику — и следи за их стажем в реальном времени!</p>
+        <p style="margin-top: 20px; font-size: 11px; color:#bba87a;">👇 Добавляй друзей по нику — и следи за их стажем! (Данные на твоём телефоне)</p>
     </div>
 
     <div id="mainScreen" class="main-screen hidden">
@@ -265,136 +264,235 @@
         <button class="btn-fail" id="failBtn">😞 СРЫВ</button>
         <div class="info-message" id="dailyInfoText"></div>
 
-        <div class="search-section">
-            <h3>🔍 НАЙТИ ДРУГА ПО НИКУ</h3>
-            <div class="search-row">
+        <div class="add-section">
+            <h3>🔍 ДОБАВИТЬ ДРУГА ПО НИКУ</h3>
+            <div class="add-row">
                 <input type="text" id="searchNameInput" placeholder="Введи ник друга">
-                <button id="addFriendBtn">➕ Добавить в команду</button>
+                <button id="addFriendBtn">➕ Добавить</button>
             </div>
-            <p style="font-size:0.55rem; color:#bba87a; margin-top:6px;">💡 Спроси у друга его ник — добавь его, и ты будешь видеть его стаж в реальном времени!</p>
+            <p style="font-size:0.55rem; color:#bba87a; margin-top:6px;">💡 Спроси у друга его ник — добавь, и ты будешь видеть его стаж. Чтобы обновить стаж друга — удали и добавь заново с новыми цифрами.</p>
         </div>
 
         <div class="players-section">
             <h2>👥 МОЯ КОМАНДА</h2>
             <div id="globalPlayersList" class="player-list">
-                <li style="color:#aaa; list-style:none;">Загрузка...</li>
+                <li style="color:#aaa; list-style:none;">Ты пока один</li>
             </div>
         </div>
-        <div class="status" id="syncStatus">🔄 Синхронизация...</div>
-        <footer>🕛 Кнопка "не дрочил" — 1 раз в сутки (сброс в 00:00)<br>📡 Данные синхронизируются глобально. Добавь друга по нику — и вы сразу увидите друг друга!</footer>
+        <div class="status" id="syncStatus">✅ Локальный режим — данные только на твоём телефоне</div>
+        <footer>🕛 Кнопка "не дрочил" — 1 раз в сутки (сброс в 00:00)<br>📡 Добавь друга по нику и введи его стаж вручную (спроси у него). Так вы сможете соревноваться!</footer>
     </div>
 </div>
 
 <script>
-    // ==================== ГЛОБАЛЬНАЯ БАЗА ЧЕРЕЗ ПРОСТОЕ ОБЛАКО ====================
-    const API_URL = "https://david-nofap-default-jsonbin.koyeb.app/api/players";
-    // Использую свой бесплатный сервер, который работает стабильно
+    // ==================== ЛОКАЛЬНАЯ ВЕРСИЯ С ДРУЗЬЯМИ ПО НИКУ ====================
+    // Вход МГНОВЕННЫЙ. Данные хранятся локально.
+    // Друзья добавляются по нику с ручным вводом стажа (так как синхронизации нет)
     
     let currentPlayer = null;
-    let friendsIds = new Set(); // ID друзей, за которыми следим
-    let syncInterval = null;
+    let friendsList = []; // { name, streakDays, lastDate? }
     
     function getTodayStr() {
         const d = new Date();
         return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     }
     
-    // Запросы к серверу
-    async function apiRequest(endpoint, method, body = null) {
-        try {
-            const options = { method, headers: { 'Content-Type': 'application/json' } };
-            if (body) options.body = JSON.stringify(body);
-            const res = await fetch(`${API_URL}${endpoint}`, options);
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            return await res.json();
-        } catch(e) {
-            console.error("API error:", e);
-            throw e;
+    function saveAll() {
+        if (currentPlayer) {
+            localStorage.setItem("david_current", JSON.stringify(currentPlayer));
+            localStorage.setItem(`david_friends_${currentPlayer.id}`, JSON.stringify(friendsList));
         }
     }
     
-    async function fetchAllPlayers() {
-        try {
-            return await apiRequest("", "GET");
-        } catch(e) { return []; }
+    function loadAll() {
+        const saved = localStorage.getItem("david_current");
+        if (saved) {
+            try {
+                currentPlayer = JSON.parse(saved);
+                const savedFriends = localStorage.getItem(`david_friends_${currentPlayer.id}`);
+                if (savedFriends) {
+                    friendsList = JSON.parse(savedFriends);
+                } else {
+                    friendsList = [];
+                }
+                return true;
+            } catch(e) {}
+        }
+        return false;
     }
     
-    async function createPlayer(name) {
-        return await apiRequest("", "POST", { name: name.trim(), streakDays: 0, lastDate: null });
+    function createNewPlayer(name) {
+        return {
+            id: Date.now() + "_" + Math.random().toString(36).substr(2, 5),
+            name: name.trim(),
+            streakDays: 0,
+            lastDate: null,
+            createdAt: Date.now()
+        };
     }
     
-    async function updatePlayer(id, data) {
-        return await apiRequest(`/${id}`, "PUT", data);
-    }
-    
-    async function getPlayerById(id) {
-        try {
-            return await apiRequest(`/${id}`, "GET");
-        } catch(e) { return null; }
-    }
-    
-    // Поиск игрока по нику
-    async function findPlayerByName(name) {
-        const all = await fetchAllPlayers();
-        return all.find(p => p.name.toLowerCase() === name.toLowerCase());
-    }
-    
-    // Добавить друга по нику
-    async function addFriendByNickname(nickname) {
+    // Добавить друга по нику (с ручным вводом стажа)
+    function addFriendByNickname(nickname, streakDays) {
         if (!currentPlayer) return false;
-        if (nickname.toLowerCase() === currentPlayer.name.toLowerCase()) {
-            alert("❌ Нельзя добавить самого себя!");
+        if (!nickname.trim()) {
+            alert("Введи ник друга!");
             return false;
         }
-        const friend = await findPlayerByName(nickname);
-        if (!friend) {
-            alert(`❌ Игрок с ником "${nickname}" не найден. Убедись, что друг уже заходил в игру!`);
+        if (nickname.trim().toLowerCase() === currentPlayer.name.toLowerCase()) {
+            alert("Нельзя добавить самого себя!");
             return false;
         }
-        if (friendsIds.has(friend.id)) {
-            alert(`${friend.name} уже в твоей команде!`);
+        if (isNaN(streakDays) || streakDays < 0) {
+            alert("Стаж должен быть числом (дни)!");
             return false;
         }
-        friendsIds.add(friend.id);
-        localStorage.setItem(`friends_${currentPlayer.id}`, JSON.stringify([...friendsIds]));
-        alert(`✅ ${friend.name} добавлен в команду! Теперь ты видишь его стаж.`);
-        renderTeamList();
+        
+        const exists = friendsList.find(f => f.name.toLowerCase() === nickname.trim().toLowerCase());
+        if (exists) {
+            if (confirm(`${nickname} уже в команде. Обновить его стаж на ${streakDays} дней?`)) {
+                exists.streakDays = parseInt(streakDays);
+                saveAll();
+                renderFriendsList();
+                alert(`✅ Стаж ${nickname} обновлён!`);
+            }
+            return false;
+        }
+        
+        friendsList.push({
+            name: nickname.trim(),
+            streakDays: parseInt(streakDays),
+            addedAt: Date.now()
+        });
+        
+        saveAll();
+        renderFriendsList();
+        alert(`✅ ${nickname} добавлен в команду со стажем ${streakDays} дней!`);
         return true;
     }
     
-    // Удалить друга
-    function removeFriend(friendId, friendName) {
-        if (confirm(`Удалить ${friendName} из команды?`)) {
-            friendsIds.delete(friendId);
-            localStorage.setItem(`friends_${currentPlayer.id}`, JSON.stringify([...friendsIds]));
-            renderTeamList();
+    function removeFriend(index) {
+        if (confirm(`Удалить ${friendsList[index].name} из команды?`)) {
+            friendsList.splice(index, 1);
+            saveAll();
+            renderFriendsList();
         }
     }
     
-    // Получить всех игроков команды (я + друзья) с актуальными данными
-    async function getTeamPlayers() {
-        const all = await fetchAllPlayers();
-        const teamIds = [currentPlayer.id, ...friendsIds];
-        const team = all.filter(p => teamIds.includes(p.id));
-        const today = getTodayStr();
-        for (let p of team) {
-            p.pressedToday = (p.lastDate === today);
+    function updateFriendStreak(index, newStreak) {
+        if (newStreak >= 0) {
+            friendsList[index].streakDays = newStreak;
+            saveAll();
+            renderFriendsList();
         }
-        team.sort((a,b) => (b.streakDays || 0) - (a.streakDays || 0));
-        return team;
     }
     
-    async function renderTeamList() {
+    function actionNoFap() {
         if (!currentPlayer) return;
-        const team = await getTeamPlayers();
+        const today = getTodayStr();
+        if (currentPlayer.lastDate === today) {
+            alert("Сегодня уже нажимал! Жди завтра.");
+            refreshUI();
+            return;
+        }
+        
+        let newStreak = 1;
+        if (currentPlayer.lastDate) {
+            const lastDate = new Date(currentPlayer.lastDate);
+            const todayDate = new Date(today);
+            const diffDays = Math.round((todayDate - lastDate) / (1000*3600*24));
+            if (diffDays === 1) {
+                newStreak = currentPlayer.streakDays + 1;
+            } else if (diffDays > 1) {
+                newStreak = 1;
+                alert("⚠️ Ты пропустил день! Стаж начался заново.");
+            }
+        }
+        
+        currentPlayer.streakDays = newStreak;
+        currentPlayer.lastDate = today;
+        saveAll();
+        refreshUI();
+        renderFriendsList();
+        alert(`🔥 КРАСАВА! Твой стаж: ${newStreak} дней!`);
+    }
+    
+    function actionFail() {
+        if (!currentPlayer) return;
+        const oldStreak = currentPlayer.streakDays;
+        currentPlayer.streakDays = 0;
+        currentPlayer.lastDate = null;
+        saveAll();
+        refreshUI();
+        renderFriendsList();
+        alert(`😭 Срыв... твой стаж ${oldStreak} дней обнулён. Завтра новый старт!`);
+    }
+    
+    function refreshUI() {
+        if (!currentPlayer) return;
+        
+        document.getElementById("myStreakValue").innerText = currentPlayer.streakDays;
+        const today = getTodayStr();
+        const alreadyPressed = (currentPlayer.lastDate === today);
+        const btn = document.getElementById("noFapBtn");
+        const infoDiv = document.getElementById("dailyInfoText");
+        
+        if (alreadyPressed) {
+            btn.disabled = true;
+            infoDiv.innerHTML = "✅ Сегодня уже нажал! Кнопка обновится завтра в 00:00";
+        } else {
+            btn.disabled = false;
+            infoDiv.innerHTML = "🚀 Жми 'не дрочил' один раз в сутки";
+        }
+        
+        let moto = "";
+        const s = currentPlayer.streakDays;
+        if (s === 0) moto = "💪 Начни свой путь прямо сегодня!";
+        else if (s < 3) moto = "⚡ Первые дни — самые сложные!";
+        else if (s < 7) moto = "🎯 Ты уже в игре! Ещё немного до недели.";
+        else if (s < 14) moto = "🌟 Неделя без дрочки! Ты легенда.";
+        else moto = "👑 МАСТЕР ВОЗДЕРЖАНИЯ!";
+        document.getElementById("motivationPhrase").innerHTML = moto;
+        
+        const statusDiv = document.getElementById("syncStatus");
+        const friendsCount = friendsList.length;
+        if (friendsCount === 0) {
+            statusDiv.innerHTML = "👤 Ты пока один. Добавь друзей по нику (спроси у них стаж)!";
+        } else {
+            statusDiv.innerHTML = `👥 В команде: ты + ${friendsCount} ${friendsCount === 1 ? 'друг' : 'друзей'}`;
+        }
+    }
+    
+    function renderFriendsList() {
+        const allPlayers = [];
+        if (currentPlayer) {
+            allPlayers.push({ 
+                name: currentPlayer.name, 
+                streakDays: currentPlayer.streakDays,
+                isMe: true,
+                pressedToday: (currentPlayer.lastDate === getTodayStr())
+            });
+        }
+        for (let i = 0; i < friendsList.length; i++) {
+            allPlayers.push({
+                name: friendsList[i].name,
+                streakDays: friendsList[i].streakDays,
+                isMe: false,
+                friendIndex: i,
+                pressedToday: false
+            });
+        }
+        allPlayers.sort((a,b) => b.streakDays - a.streakDays);
+        
         const container = document.getElementById("globalPlayersList");
         if (!container) return;
-        if (team.length === 0) {
+        
+        if (allPlayers.length === 0) {
             container.innerHTML = '<li style="color:#aaa; list-style:none;">😢 Добавь друзей по нику</li>';
             return;
         }
+        
         container.innerHTML = "";
-        for (let p of team) {
+        for (let p of allPlayers) {
             const li = document.createElement("li");
             li.className = "player-item";
             
@@ -407,10 +505,10 @@
             const nameSpan = document.createElement("span");
             nameSpan.className = "player-name";
             let nameHtml = p.name;
-            if (currentPlayer.id === p.id) {
+            if (p.isMe) {
                 nameHtml += ` <span class="you-badge">ты</span>`;
             }
-            if (p.pressedToday && currentPlayer.id !== p.id) {
+            if (p.pressedToday && !p.isMe) {
                 nameHtml += ` <span class="today-badge">✅ сегодня</span>`;
             }
             nameSpan.innerHTML = nameHtml;
@@ -418,7 +516,7 @@
             
             const streakSpan = document.createElement("span");
             streakSpan.className = "player-streak";
-            streakSpan.innerText = `${p.streakDays || 0} дн.`;
+            streakSpan.innerText = `${p.streakDays} дн.`;
             
             const rightDiv = document.createElement("div");
             rightDiv.style.display = "flex";
@@ -426,13 +524,30 @@
             rightDiv.style.gap = "8px";
             rightDiv.appendChild(streakSpan);
             
-            if (currentPlayer.id !== p.id) {
+            if (!p.isMe && p.friendIndex !== undefined) {
+                const editBtn = document.createElement("button");
+                editBtn.innerText = "✏️";
+                editBtn.style.background = "#ffaa33";
+                editBtn.style.border = "none";
+                editBtn.style.borderRadius = "30px";
+                editBtn.style.padding = "4px 8px";
+                editBtn.style.cursor = "pointer";
+                editBtn.style.fontSize = "0.7rem";
+                editBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    const newStreak = prompt(`Введи новый стаж для ${p.name} (дни):`, p.streakDays);
+                    if (newStreak !== null && !isNaN(parseInt(newStreak))) {
+                        updateFriendStreak(p.friendIndex, parseInt(newStreak));
+                    }
+                };
+                rightDiv.appendChild(editBtn);
+                
                 const delBtn = document.createElement("button");
                 delBtn.innerText = "✕";
                 delBtn.className = "delete-btn";
                 delBtn.onclick = (e) => {
                     e.stopPropagation();
-                    removeFriend(p.id, p.name);
+                    removeFriend(p.friendIndex);
                 };
                 rightDiv.appendChild(delBtn);
             }
@@ -441,180 +556,95 @@
             li.appendChild(rightDiv);
             container.appendChild(li);
         }
-        
-        const statusDiv = document.getElementById("syncStatus");
-        if (team.length <= 1) {
-            statusDiv.innerHTML = "👤 Ты один. Найди друзей по нику!";
-        } else {
-            statusDiv.innerHTML = `👥 В команде: ${team.length} человек`;
-        }
-    }
-    
-    // Инициализация/вход игрока
-    async function initPlayer(name) {
-        let existing = await findPlayerByName(name);
-        if (existing) {
-            currentPlayer = existing;
-            await updatePlayer(currentPlayer.id, { ...currentPlayer, lastSeen: Date.now() });
-        } else {
-            currentPlayer = await createPlayer(name);
-        }
-        // Загружаем список друзей
-        const savedFriends = localStorage.getItem(`friends_${currentPlayer.id}`);
-        if (savedFriends) {
-            try { friendsIds = new Set(JSON.parse(savedFriends)); } catch(e) { friendsIds = new Set(); }
-        } else {
-            friendsIds = new Set();
-        }
-        return currentPlayer;
-    }
-    
-    // Действие "НЕ ДРОЧИЛ"
-    async function actionNoFap() {
-        if (!currentPlayer) return;
-        const today = getTodayStr();
-        if (currentPlayer.lastDate === today) {
-            alert("Сегодня уже нажимал! Жди завтра.");
-            refreshUI();
-            return;
-        }
-        let newStreak = 1;
-        if (currentPlayer.lastDate) {
-            const diff = Math.round((new Date(today) - new Date(currentPlayer.lastDate)) / (1000*3600*24));
-            if (diff === 1) newStreak = currentPlayer.streakDays + 1;
-            else if (diff > 1) newStreak = 1;
-        }
-        currentPlayer.streakDays = newStreak;
-        currentPlayer.lastDate = today;
-        await updatePlayer(currentPlayer.id, { streakDays: newStreak, lastDate: today });
-        await refreshUI();
-        await renderTeamList();
-        alert(`🔥 КРАСАВА! Твой стаж: ${newStreak} дней!`);
-    }
-    
-    // Срыв
-    async function actionFail() {
-        if (!currentPlayer) return;
-        const oldStreak = currentPlayer.streakDays;
-        currentPlayer.streakDays = 0;
-        currentPlayer.lastDate = null;
-        await updatePlayer(currentPlayer.id, { streakDays: 0, lastDate: null });
-        await refreshUI();
-        await renderTeamList();
-        alert(`😭 Срыв... твой стаж ${oldStreak} дней обнулён. Завтра новый старт!`);
-    }
-    
-    async function refreshUI() {
-        if (!currentPlayer) return;
-        // Обновляем данные из сервера
-        const fresh = await getPlayerById(currentPlayer.id);
-        if (fresh) {
-            currentPlayer = fresh;
-        }
-        document.getElementById("myStreakValue").innerText = currentPlayer.streakDays;
-        const today = getTodayStr();
-        const already = (currentPlayer.lastDate === today);
-        const btn = document.getElementById("noFapBtn");
-        const infoDiv = document.getElementById("dailyInfoText");
-        if (already) {
-            btn.disabled = true;
-            infoDiv.innerHTML = "✅ Сегодня уже нажал! Кнопка обновится завтра в 00:00";
-        } else {
-            btn.disabled = false;
-            infoDiv.innerHTML = "🚀 Жми 'не дрочил' один раз в сутки";
-        }
-        let quote = currentPlayer.streakDays === 0 ? "💪 Начни прямо сегодня" :
-                    currentPlayer.streakDays < 3 ? "⚡ Первые дни самые сложные" :
-                    currentPlayer.streakDays < 7 ? "🎯 Ты уже в игре!" : "🌟 Ты легенда!";
-        document.getElementById("motivationPhrase").innerHTML = quote;
     }
     
     // Вход
-    async function handleEnter() {
+    function handleEnter() {
         const nameInput = document.getElementById("loginNameInput");
         const name = nameInput.value.trim();
         const errorDiv = document.getElementById("loginError");
+        
         if (!name) {
             errorDiv.innerHTML = '<div class="error-msg">⚠️ Введи свой ник!</div>';
             return;
         }
-        const enterBtn = document.getElementById("enterBtn");
-        enterBtn.innerText = "⏳...";
-        enterBtn.disabled = true;
-        try {
-            await initPlayer(name);
-            document.getElementById("loginScreen").classList.add("hidden");
-            document.getElementById("mainScreen").classList.remove("hidden");
-            await refreshUI();
-            await renderTeamList();
-            if (syncInterval) clearInterval(syncInterval);
-            syncInterval = setInterval(async () => {
-                if (currentPlayer) {
-                    await refreshUI();
-                    await renderTeamList();
+        
+        const saved = localStorage.getItem("david_current");
+        let existing = null;
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                if (parsed.name.toLowerCase() === name.toLowerCase()) {
+                    existing = parsed;
                 }
-            }, 4000);
-            alert(`Добро пожаловать, ${name}! Теперь ты в игре. Найди друзей по нику и добавь их в команду!`);
-        } catch(e) {
-            errorDiv.innerHTML = '<div class="error-msg">❌ Ошибка, проверь интернет</div>';
-        } finally {
-            enterBtn.innerText = "🚪 ВОЙТИ";
-            enterBtn.disabled = false;
+            } catch(e) {}
+        }
+        
+        if (existing) {
+            currentPlayer = existing;
+            const savedFriends = localStorage.getItem(`david_friends_${currentPlayer.id}`);
+            if (savedFriends) {
+                friendsList = JSON.parse(savedFriends);
+            } else {
+                friendsList = [];
+            }
+        } else {
+            currentPlayer = createNewPlayer(name);
+            friendsList = [];
+        }
+        
+        saveAll();
+        
+        document.getElementById("loginScreen").classList.add("hidden");
+        document.getElementById("mainScreen").classList.remove("hidden");
+        
+        refreshUI();
+        renderFriendsList();
+        
+        if (existing) {
+            alert(`С возвращением, ${name}! Твой стаж: ${currentPlayer.streakDays} дней.`);
+        } else {
+            alert(`🎉 Добро пожаловать, ${name}! Теперь нажимай "не дрочил" каждый день!`);
         }
     }
     
-    async function onAddFriend() {
+    function onAddFriend() {
         const nameInput = document.getElementById("searchNameInput");
         const name = nameInput.value.trim();
+        
         if (!name) {
             alert("Введи ник друга!");
             return;
         }
-        await addFriendByNickname(name);
-        nameInput.value = "";
-        await renderTeamList();
-    }
-    
-    async function tryAutoLogin() {
-        const savedId = localStorage.getItem("david_current_id");
-        if (!savedId) return false;
-        try {
-            const player = await getPlayerById(savedId);
-            if (player) {
-                currentPlayer = player;
-                const savedFriends = localStorage.getItem(`friends_${currentPlayer.id}`);
-                if (savedFriends) {
-                    try { friendsIds = new Set(JSON.parse(savedFriends)); } catch(e) { friendsIds = new Set(); }
-                }
-                document.getElementById("loginScreen").classList.add("hidden");
-                document.getElementById("mainScreen").classList.remove("hidden");
-                await refreshUI();
-                await renderTeamList();
-                if (syncInterval) clearInterval(syncInterval);
-                syncInterval = setInterval(async () => {
-                    if (currentPlayer) {
-                        await refreshUI();
-                        await renderTeamList();
-                    }
-                }, 4000);
-                return true;
-            }
-        } catch(e) {}
-        return false;
-    }
-    
-    window.addEventListener("beforeunload", () => {
-        if (currentPlayer) {
-            localStorage.setItem("david_current_id", currentPlayer.id);
+        
+        const streak = prompt(`Введи стаж для ${name} (сколько дней он не дрочит):`, "0");
+        if (streak === null) return;
+        const streakNum = parseInt(streak);
+        if (isNaN(streakNum)) {
+            alert("Стаж должен быть числом!");
+            return;
         }
-    });
+        
+        addFriendByNickname(name, streakNum);
+        nameInput.value = "";
+    }
     
-    document.addEventListener("DOMContentLoaded", async () => {
-        const auto = await tryAutoLogin();
-        if (!auto) {
+    function tryAutoLogin() {
+        return loadAll();
+    }
+    
+    document.addEventListener("DOMContentLoaded", () => {
+        const autoLogged = tryAutoLogin();
+        if (autoLogged && currentPlayer) {
+            document.getElementById("loginScreen").classList.add("hidden");
+            document.getElementById("mainScreen").classList.remove("hidden");
+            refreshUI();
+            renderFriendsList();
+        } else {
             document.getElementById("loginScreen").classList.remove("hidden");
             document.getElementById("mainScreen").classList.add("hidden");
         }
+        
         document.getElementById("enterBtn").addEventListener("click", handleEnter);
         document.getElementById("noFapBtn").addEventListener("click", actionNoFap);
         document.getElementById("failBtn").addEventListener("click", actionFail);
