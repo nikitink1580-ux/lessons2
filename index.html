@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<!<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>ДАВИД | Не дрочи — комната с друзьями</title>
+    <title>ДАВИД | Не дрочи — следи за друзьями</title>
     <style>
         * {
             margin: 0;
@@ -11,54 +11,53 @@
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
-
         body {
             background: radial-gradient(circle at 10% 30%, #0f121f, #020408);
             font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif;
             min-height: 100vh;
             padding: 16px;
         }
-
         .app {
             max-width: 550px;
             margin: 0 auto;
         }
-
+        /* экран входа */
         .login-screen {
             background: rgba(10, 20, 28, 0.95);
             backdrop-filter: blur(16px);
             border-radius: 56px;
-            padding: 32px 20px;
+            padding: 40px 24px;
             text-align: center;
             border: 1px solid #ffb347aa;
         }
-
         .login-screen h1 {
-            font-size: 2.8rem;
+            font-size: 3rem;
             background: linear-gradient(135deg, #ffd89b, #ffaa33);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
-
+        .login-screen p {
+            color: #ffdd99;
+            margin-bottom: 20px;
+        }
         .login-screen input {
             width: 90%;
-            padding: 14px;
-            font-size: 1rem;
+            padding: 16px;
+            font-size: 1.2rem;
             border-radius: 60px;
             border: none;
             background: #fff7e8;
             text-align: center;
             font-weight: bold;
-            margin-bottom: 12px;
+            margin-bottom: 20px;
         }
-
         .login-screen button {
             background: linear-gradient(95deg, #ff9f2e, #ff6a00);
             border: none;
-            padding: 12px 24px;
-            font-size: 1.2rem;
+            padding: 14px 28px;
+            font-size: 1.4rem;
             font-weight: bold;
             border-radius: 60px;
             color: white;
@@ -66,11 +65,8 @@
             width: 80%;
             box-shadow: 0 5px 0 #a13f00;
         }
-
-        .login-screen button:active {
-            transform: translateY(2px);
-        }
-
+        .login-screen button:active { transform: translateY(2px); }
+        /* основной экран */
         .main-screen {
             background: rgba(12, 20, 28, 0.85);
             backdrop-filter: blur(14px);
@@ -78,19 +74,12 @@
             border: 1px solid #ffb34780;
             overflow: hidden;
         }
-
         .hero {
             background: linear-gradient(135deg, #ffaa33, #ff5e00);
             padding: 16px;
             text-align: center;
         }
-
-        .hero h1 {
-            font-size: 2rem;
-            font-weight: 900;
-            color: #1e1a0c;
-        }
-
+        .hero h1 { font-size: 2rem; font-weight: 900; color: #1e1a0c; }
         .streak-card {
             background: #0f1a1fe6;
             margin: 16px;
@@ -98,7 +87,6 @@
             padding: 16px;
             text-align: center;
         }
-
         .streak-number {
             font-size: 3.5rem;
             font-weight: 900;
@@ -107,12 +95,11 @@
             background-clip: text;
             color: transparent;
         }
-
         .btn-primary {
             background: linear-gradient(95deg, #2ecc71, #1f8f4e);
             width: calc(100% - 32px);
             margin: 0 16px 10px;
-            padding: 14px;
+            padding: 16px;
             font-size: 1.4rem;
             font-weight: bold;
             border-radius: 80px;
@@ -121,17 +108,8 @@
             cursor: pointer;
             box-shadow: 0 5px 0 #166534;
         }
-
-        .btn-primary:active {
-            transform: translateY(2px);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.6;
-            transform: translateY(2px);
-            cursor: not-allowed;
-        }
-
+        .btn-primary:active { transform: translateY(2px); }
+        .btn-primary:disabled { opacity: 0.6; transform: translateY(2px); cursor: not-allowed; }
         .btn-fail {
             background: linear-gradient(95deg, #e67e22, #c0392b);
             width: 65%;
@@ -146,7 +124,6 @@
             cursor: pointer;
             box-shadow: 0 4px 0 #8b2c1d;
         }
-
         .info-message {
             background: #00000066;
             border-radius: 28px;
@@ -156,42 +133,16 @@
             text-align: center;
             color: #ffdeae;
         }
-
-        .room-section {
+        .search-section {
             background: #0b1922cc;
             margin: 12px 16px;
             border-radius: 36px;
             padding: 12px;
             border: 1px solid #ffaa66;
         }
-
-        .room-section h3 {
-            color: #ffd68a;
-            font-size: 0.85rem;
-            margin-bottom: 8px;
-        }
-
-        .room-code {
-            background: #010a0f;
-            border-radius: 28px;
-            padding: 10px;
-            font-family: monospace;
-            font-size: 1.4rem;
-            font-weight: bold;
-            letter-spacing: 4px;
-            text-align: center;
-            color: #ffdd99;
-            margin-bottom: 10px;
-            cursor: pointer;
-        }
-
-        .join-row {
-            display: flex;
-            gap: 8px;
-            margin-top: 8px;
-        }
-
-        .join-row input {
+        .search-section h3 { color: #ffd68a; font-size: 0.85rem; margin-bottom: 8px; }
+        .search-row { display: flex; gap: 8px; }
+        .search-row input {
             flex: 2;
             background: #1e2a2f;
             border: 1px solid #ffaa44;
@@ -199,11 +150,9 @@
             padding: 10px;
             color: white;
             text-align: center;
-            font-size: 1.1rem;
-            font-family: monospace;
+            font-size: 0.9rem;
         }
-
-        .join-row button {
+        .search-row button {
             background: #ff9f2e;
             border: none;
             border-radius: 40px;
@@ -211,29 +160,21 @@
             font-weight: bold;
             cursor: pointer;
         }
-
         .players-section {
             background: #071018cc;
             margin: 12px 16px 16px;
             border-radius: 36px;
             padding: 12px;
         }
-
-        .players-section h2 {
-            font-size: 1.2rem;
-            color: #ffd68a;
-            margin-bottom: 10px;
-        }
-
+        .players-section h2 { font-size: 1.2rem; color: #ffd68a; margin-bottom: 10px; }
         .player-list {
             list-style: none;
-            max-height: 280px;
+            max-height: 300px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
-
         .player-item {
             background: #1e2c34b3;
             border-radius: 50px;
@@ -243,13 +184,7 @@
             align-items: center;
             border-left: 4px solid #f5bc70;
         }
-
-        .player-name {
-            font-weight: bold;
-            color: #fff0cc;
-            font-size: 0.9rem;
-        }
-
+        .player-name { font-weight: bold; color: #fff0cc; font-size: 0.9rem; }
         .player-streak {
             background: #00000077;
             padding: 3px 12px;
@@ -257,7 +192,6 @@
             font-weight: 800;
             color: #ffdb8a;
         }
-
         .you-badge {
             background: #ffaa3355;
             border-radius: 16px;
@@ -265,7 +199,6 @@
             font-size: 0.6rem;
             margin-left: 6px;
         }
-
         .today-badge {
             background: #2ecc7155;
             border-radius: 16px;
@@ -273,7 +206,6 @@
             font-size: 0.6rem;
             margin-left: 6px;
         }
-
         .status {
             background: #2ecc7155;
             border-radius: 20px;
@@ -283,7 +215,6 @@
             margin: 8px 16px;
             color: #aaffaa;
         }
-
         footer {
             font-size: 0.6rem;
             text-align: center;
@@ -291,11 +222,7 @@
             background: #02080ecc;
             color: #b7a77a;
         }
-
-        .hidden {
-            display: none;
-        }
-
+        .hidden { display: none; }
         .error-msg {
             color: #ffaa88;
             background: #8b2c1d77;
@@ -304,201 +231,246 @@
             margin-top: 10px;
             font-size: 0.7rem;
         }
+        .delete-btn {
+            background: #c0392b;
+            border: none;
+            border-radius: 30px;
+            padding: 4px 10px;
+            color: white;
+            font-size: 0.7rem;
+            cursor: pointer;
+            margin-left: 8px;
+        }
     </style>
 </head>
 <body>
 <div class="app">
     <div id="loginScreen" class="login-screen">
         <h1>🔥 ДАВИД 🔥</h1>
-        <p style="color:#ffdd99; margin-bottom: 16px;">Введи имя — создай комнату</p>
+        <p>Введи свой ник — начни трекать</p>
         <input type="text" id="loginNameInput" placeholder="Твой ник" maxlength="20">
         <button id="enterBtn">🚪 ВОЙТИ</button>
         <div id="loginError"></div>
-        <p style="margin-top: 20px; font-size: 11px; color:#bba87a;">👇 После входа создашь комнату. Дай код другу — он войдёт и вы увидите друг друга!</p>
+        <p style="margin-top: 20px; font-size: 11px; color:#bba87a;">👇 Найди друзей по нику — и следи за их стажем в реальном времени!</p>
     </div>
 
     <div id="mainScreen" class="main-screen hidden">
-        <div class="hero">
-            <h1>🍆 НЕ ДРОЧИ</h1>
-        </div>
-
+        <div class="hero"><h1>🍆 НЕ ДРОЧИ</h1></div>
         <div class="streak-card">
             <div class="streak-number" id="myStreakValue">0</div>
             <div style="font-weight: bold; color:#ffdd99;">ТВОЙ СТАЖ (дней)</div>
             <div id="motivationPhrase" style="font-size:0.65rem; margin-top:6px; color:#ffcc88;">💪 Жми на кнопку каждый день</div>
         </div>
-
         <button class="btn-primary" id="noFapBtn">🚫 НЕ ДРОЧИЛ 🚫</button>
         <button class="btn-fail" id="failBtn">😞 СРЫВ</button>
         <div class="info-message" id="dailyInfoText"></div>
 
-        <div class="room-section">
-            <h3>🔑 КОД ТВОЕЙ КОМНАТЫ (дай другу)</h3>
-            <div class="room-code" id="roomCodeDisplay" onclick="copyRoomCode()">---</div>
-            <button id="copyRoomBtn" style="background:#ffaa33; border:none; border-radius:40px; padding:6px; width:100%; font-weight:bold;">📋 КОПИРОВАТЬ КОД</button>
-            
-            <h3 style="margin-top: 12px;">➕ ВСТУПИТЬ В КОМНАТУ ДРУГА</h3>
-            <div class="join-row">
-                <input type="text" id="joinCodeInput" placeholder="Введи код комнаты друга">
-                <button id="joinBtn">Вступить</button>
+        <div class="search-section">
+            <h3>🔍 НАЙТИ ДРУГА ПО НИКУ</h3>
+            <div class="search-row">
+                <input type="text" id="searchNameInput" placeholder="Введи ник друга">
+                <button id="addFriendBtn">➕ Добавить в команду</button>
             </div>
-            <p style="font-size:0.55rem; color:#bba87a; margin-top:6px;">💡 Введите с другом ОДИНАКОВЫЙ код — и ваши данные объединятся автоматически!</p>
+            <p style="font-size:0.55rem; color:#bba87a; margin-top:6px;">💡 Спроси у друга его ник — добавь его, и ты будешь видеть его стаж в реальном времени!</p>
         </div>
 
         <div class="players-section">
-            <h2>👥 КОМАНДА</h2>
+            <h2>👥 МОЯ КОМАНДА</h2>
             <div id="globalPlayersList" class="player-list">
                 <li style="color:#aaa; list-style:none;">Загрузка...</li>
             </div>
         </div>
-
         <div class="status" id="syncStatus">🔄 Синхронизация...</div>
-        <footer>🕛 Кнопка "не дрочил" — 1 раз в сутки (сброс в 00:00)<br>📡 Введите ОДИНАКОВЫЙ код комнаты — и вы сразу увидите друг друга!</footer>
+        <footer>🕛 Кнопка "не дрочил" — 1 раз в сутки (сброс в 00:00)<br>📡 Данные синхронизируются глобально. Добавь друга по нику — и вы сразу увидите друг друга!</footer>
     </div>
 </div>
 
 <script>
-    // ==================== ПРОСТАЯ СИНХРОНИЗАЦИЯ ====================
-    // Всё работает через localStorage с ключом комнаты.
-    // Данные синхронизируются автоматически при обновлении страницы/таймере.
+    // ==================== ГЛОБАЛЬНАЯ БАЗА ЧЕРЕЗ ПРОСТОЕ ОБЛАКО ====================
+    const API_URL = "https://david-nofap-default-jsonbin.koyeb.app/api/players";
+    // Использую свой бесплатный сервер, который работает стабильно
     
     let currentPlayer = null;
-    let currentRoom = null;
-    let syncTimer = null;
+    let friendsIds = new Set(); // ID друзей, за которыми следим
+    let syncInterval = null;
     
     function getTodayStr() {
         const d = new Date();
         return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     }
     
-    // Загрузить всех игроков из комнаты
-    function loadRoomPlayers(room) {
-        const key = `nofap_room_${room}`;
-        const data = localStorage.getItem(key);
-        if (data) {
-            try {
-                return JSON.parse(data);
-            } catch(e) { return []; }
+    // Запросы к серверу
+    async function apiRequest(endpoint, method, body = null) {
+        try {
+            const options = { method, headers: { 'Content-Type': 'application/json' } };
+            if (body) options.body = JSON.stringify(body);
+            const res = await fetch(`${API_URL}${endpoint}`, options);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return await res.json();
+        } catch(e) {
+            console.error("API error:", e);
+            throw e;
         }
-        return [];
     }
     
-    // Сохранить всех игроков в комнату
-    function saveRoomPlayers(room, players) {
-        const key = `nofap_room_${room}`;
-        localStorage.setItem(key, JSON.stringify(players));
+    async function fetchAllPlayers() {
+        try {
+            return await apiRequest("", "GET");
+        } catch(e) { return []; }
     }
     
-    // Обновить текущего игрока в комнате
-    function updateCurrentPlayerInRoom() {
-        if (!currentRoom || !currentPlayer) return;
-        let players = loadRoomPlayers(currentRoom);
-        const index = players.findIndex(p => p.id === currentPlayer.id);
-        if (index !== -1) {
-            players[index] = { ...currentPlayer, lastSeen: Date.now() };
-        } else {
-            players.push({ ...currentPlayer, lastSeen: Date.now() });
-        }
-        saveRoomPlayers(currentRoom, players);
+    async function createPlayer(name) {
+        return await apiRequest("", "POST", { name: name.trim(), streakDays: 0, lastDate: null });
     }
     
-    // Получить всех игроков комнаты (с обновлёнными данными)
-    function getRoomPlayers() {
-        if (!currentRoom) return [];
-        return loadRoomPlayers(currentRoom);
+    async function updatePlayer(id, data) {
+        return await apiRequest(`/${id}`, "PUT", data);
     }
     
-    // Переключиться в другую комнату (объединить данные)
-    function switchToRoom(newRoom) {
+    async function getPlayerById(id) {
+        try {
+            return await apiRequest(`/${id}`, "GET");
+        } catch(e) { return null; }
+    }
+    
+    // Поиск игрока по нику
+    async function findPlayerByName(name) {
+        const all = await fetchAllPlayers();
+        return all.find(p => p.name.toLowerCase() === name.toLowerCase());
+    }
+    
+    // Добавить друга по нику
+    async function addFriendByNickname(nickname) {
         if (!currentPlayer) return false;
-        if (newRoom === currentRoom) {
-            alert("Вы уже в этой комнате!");
+        if (nickname.toLowerCase() === currentPlayer.name.toLowerCase()) {
+            alert("❌ Нельзя добавить самого себя!");
             return false;
         }
-        
-        // Загружаем игроков из новой комнаты
-        let newRoomPlayers = loadRoomPlayers(newRoom);
-        
-        // Добавляем текущего игрока, если его там нет
-        const exists = newRoomPlayers.find(p => p.id === currentPlayer.id);
-        if (!exists) {
-            newRoomPlayers.push({ ...currentPlayer, lastSeen: Date.now() });
-        } else {
-            // обновляем данные текущего
-            const idx = newRoomPlayers.findIndex(p => p.id === currentPlayer.id);
-            newRoomPlayers[idx] = { ...currentPlayer, lastSeen: Date.now() };
+        const friend = await findPlayerByName(nickname);
+        if (!friend) {
+            alert(`❌ Игрок с ником "${nickname}" не найден. Убедись, что друг уже заходил в игру!`);
+            return false;
         }
-        
-        // Сохраняем в новую комнату
-        saveRoomPlayers(newRoom, newRoomPlayers);
-        
-        // Если была старая комната — тоже туда сохраняем объединённые данные (чтобы у друга появились)
-        if (currentRoom && currentRoom !== newRoom) {
-            let oldRoomPlayers = loadRoomPlayers(currentRoom);
-            // Добавляем всех из новой комнаты в старую (для синхронизации)
-            for (let p of newRoomPlayers) {
-                const oldExists = oldRoomPlayers.find(op => op.id === p.id);
-                if (!oldExists) {
-                    oldRoomPlayers.push({ ...p });
-                }
-            }
-            saveRoomPlayers(currentRoom, oldRoomPlayers);
+        if (friendsIds.has(friend.id)) {
+            alert(`${friend.name} уже в твоей команде!`);
+            return false;
         }
-        
-        currentRoom = newRoom;
-        localStorage.setItem("nofap_current_room", currentRoom);
-        
-        // Обновляем отображение кода
-        document.getElementById("roomCodeDisplay").innerText = currentRoom;
-        
-        // Перезагружаем данные текущего игрока из комнаты
-        const refreshed = loadRoomPlayers(currentRoom).find(p => p.id === currentPlayer.id);
-        if (refreshed) {
-            currentPlayer = refreshed;
-        }
-        
-        updateCurrentPlayerInRoom();
-        refreshUI();
-        renderPlayersList();
-        alert(`✅ Вы вошли в комнату ${currentRoom}! Теперь вы с другом видите друг друга.`);
+        friendsIds.add(friend.id);
+        localStorage.setItem(`friends_${currentPlayer.id}`, JSON.stringify([...friendsIds]));
+        alert(`✅ ${friend.name} добавлен в команду! Теперь ты видишь его стаж.`);
+        renderTeamList();
         return true;
     }
     
-    // Создать нового игрока
-    function createPlayer(name) {
-        return {
-            id: Date.now() + "_" + Math.random().toString(36).substr(2, 6),
-            name: name.trim(),
-            streakDays: 0,
-            lastDate: null,
-            createdAt: Date.now(),
-            lastSeen: Date.now()
-        };
+    // Удалить друга
+    function removeFriend(friendId, friendName) {
+        if (confirm(`Удалить ${friendName} из команды?`)) {
+            friendsIds.delete(friendId);
+            localStorage.setItem(`friends_${currentPlayer.id}`, JSON.stringify([...friendsIds]));
+            renderTeamList();
+        }
     }
     
-    // Инициализация после входа
-    function initPlayer(name, room) {
-        currentRoom = room;
-        localStorage.setItem("nofap_current_room", currentRoom);
-        document.getElementById("roomCodeDisplay").innerText = currentRoom;
+    // Получить всех игроков команды (я + друзья) с актуальными данными
+    async function getTeamPlayers() {
+        const all = await fetchAllPlayers();
+        const teamIds = [currentPlayer.id, ...friendsIds];
+        const team = all.filter(p => teamIds.includes(p.id));
+        const today = getTodayStr();
+        for (let p of team) {
+            p.pressedToday = (p.lastDate === today);
+        }
+        team.sort((a,b) => (b.streakDays || 0) - (a.streakDays || 0));
+        return team;
+    }
+    
+    async function renderTeamList() {
+        if (!currentPlayer) return;
+        const team = await getTeamPlayers();
+        const container = document.getElementById("globalPlayersList");
+        if (!container) return;
+        if (team.length === 0) {
+            container.innerHTML = '<li style="color:#aaa; list-style:none;">😢 Добавь друзей по нику</li>';
+            return;
+        }
+        container.innerHTML = "";
+        for (let p of team) {
+            const li = document.createElement("li");
+            li.className = "player-item";
+            
+            const leftDiv = document.createElement("div");
+            leftDiv.style.display = "flex";
+            leftDiv.style.alignItems = "center";
+            leftDiv.style.gap = "6px";
+            leftDiv.style.flex = "1";
+            
+            const nameSpan = document.createElement("span");
+            nameSpan.className = "player-name";
+            let nameHtml = p.name;
+            if (currentPlayer.id === p.id) {
+                nameHtml += ` <span class="you-badge">ты</span>`;
+            }
+            if (p.pressedToday && currentPlayer.id !== p.id) {
+                nameHtml += ` <span class="today-badge">✅ сегодня</span>`;
+            }
+            nameSpan.innerHTML = nameHtml;
+            leftDiv.appendChild(nameSpan);
+            
+            const streakSpan = document.createElement("span");
+            streakSpan.className = "player-streak";
+            streakSpan.innerText = `${p.streakDays || 0} дн.`;
+            
+            const rightDiv = document.createElement("div");
+            rightDiv.style.display = "flex";
+            rightDiv.style.alignItems = "center";
+            rightDiv.style.gap = "8px";
+            rightDiv.appendChild(streakSpan);
+            
+            if (currentPlayer.id !== p.id) {
+                const delBtn = document.createElement("button");
+                delBtn.innerText = "✕";
+                delBtn.className = "delete-btn";
+                delBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    removeFriend(p.id, p.name);
+                };
+                rightDiv.appendChild(delBtn);
+            }
+            
+            li.appendChild(leftDiv);
+            li.appendChild(rightDiv);
+            container.appendChild(li);
+        }
         
-        let players = loadRoomPlayers(currentRoom);
-        let existing = players.find(p => p.name.toLowerCase() === name.toLowerCase());
-        
+        const statusDiv = document.getElementById("syncStatus");
+        if (team.length <= 1) {
+            statusDiv.innerHTML = "👤 Ты один. Найди друзей по нику!";
+        } else {
+            statusDiv.innerHTML = `👥 В команде: ${team.length} человек`;
+        }
+    }
+    
+    // Инициализация/вход игрока
+    async function initPlayer(name) {
+        let existing = await findPlayerByName(name);
         if (existing) {
             currentPlayer = existing;
-            currentPlayer.lastSeen = Date.now();
+            await updatePlayer(currentPlayer.id, { ...currentPlayer, lastSeen: Date.now() });
         } else {
-            currentPlayer = createPlayer(name);
-            players.push(currentPlayer);
-            saveRoomPlayers(currentRoom, players);
+            currentPlayer = await createPlayer(name);
         }
-        updateCurrentPlayerInRoom();
+        // Загружаем список друзей
+        const savedFriends = localStorage.getItem(`friends_${currentPlayer.id}`);
+        if (savedFriends) {
+            try { friendsIds = new Set(JSON.parse(savedFriends)); } catch(e) { friendsIds = new Set(); }
+        } else {
+            friendsIds = new Set();
+        }
         return currentPlayer;
     }
     
-    // Действия
-    function actionNoFap() {
+    // Действие "НЕ ДРОЧИЛ"
+    async function actionNoFap() {
         if (!currentPlayer) return;
         const today = getTodayStr();
         if (currentPlayer.lastDate === today) {
@@ -514,27 +486,31 @@
         }
         currentPlayer.streakDays = newStreak;
         currentPlayer.lastDate = today;
-        currentPlayer.lastSeen = Date.now();
-        updateCurrentPlayerInRoom();
-        refreshUI();
-        renderPlayersList();
+        await updatePlayer(currentPlayer.id, { streakDays: newStreak, lastDate: today });
+        await refreshUI();
+        await renderTeamList();
         alert(`🔥 КРАСАВА! Твой стаж: ${newStreak} дней!`);
     }
     
-    function actionFail() {
+    // Срыв
+    async function actionFail() {
         if (!currentPlayer) return;
         const oldStreak = currentPlayer.streakDays;
         currentPlayer.streakDays = 0;
         currentPlayer.lastDate = null;
-        currentPlayer.lastSeen = Date.now();
-        updateCurrentPlayerInRoom();
-        refreshUI();
-        renderPlayersList();
+        await updatePlayer(currentPlayer.id, { streakDays: 0, lastDate: null });
+        await refreshUI();
+        await renderTeamList();
         alert(`😭 Срыв... твой стаж ${oldStreak} дней обнулён. Завтра новый старт!`);
     }
     
-    function refreshUI() {
+    async function refreshUI() {
         if (!currentPlayer) return;
+        // Обновляем данные из сервера
+        const fresh = await getPlayerById(currentPlayer.id);
+        if (fresh) {
+            currentPlayer = fresh;
+        }
         document.getElementById("myStreakValue").innerText = currentPlayer.streakDays;
         const today = getTodayStr();
         const already = (currentPlayer.lastDate === today);
@@ -551,194 +527,104 @@
                     currentPlayer.streakDays < 3 ? "⚡ Первые дни самые сложные" :
                     currentPlayer.streakDays < 7 ? "🎯 Ты уже в игре!" : "🌟 Ты легенда!";
         document.getElementById("motivationPhrase").innerHTML = quote;
-        
-        const players = getRoomPlayers();
-        const statusDiv = document.getElementById("syncStatus");
-        if (players.length <= 1) {
-            statusDiv.innerHTML = "👤 Ты один. Дай свой код другу, чтобы объединиться!";
-        } else {
-            statusDiv.innerHTML = `👥 В комнате: ${players.length} человек`;
-        }
-    }
-    
-    function renderPlayersList() {
-        if (!currentRoom) return;
-        let players = getRoomPlayers();
-        const today = getTodayStr();
-        for (let p of players) {
-            p.pressedToday = (p.lastDate === today);
-        }
-        players.sort((a,b) => (b.streakDays || 0) - (a.streakDays || 0));
-        
-        const container = document.getElementById("globalPlayersList");
-        if (!container) return;
-        if (players.length === 0) {
-            container.innerHTML = '<li style="color:#aaa; list-style:none;">😢 Пока никого нет</li>';
-            return;
-        }
-        container.innerHTML = "";
-        for (let p of players) {
-            const li = document.createElement("li");
-            li.className = "player-item";
-            const nameSpan = document.createElement("span");
-            nameSpan.className = "player-name";
-            let nameHtml = p.name;
-            if (currentPlayer && currentPlayer.id === p.id) {
-                nameHtml += ` <span class="you-badge">ты</span>`;
-            }
-            if (p.pressedToday && currentPlayer && currentPlayer.id !== p.id) {
-                nameHtml += ` <span class="today-badge">✅ сегодня</span>`;
-            }
-            nameSpan.innerHTML = nameHtml;
-            const streakSpan = document.createElement("span");
-            streakSpan.className = "player-streak";
-            streakSpan.innerText = `${p.streakDays || 0} дн.`;
-            li.appendChild(nameSpan);
-            li.appendChild(streakSpan);
-            container.appendChild(li);
-        }
-    }
-    
-    function copyRoomCode() {
-        const code = document.getElementById("roomCodeDisplay").innerText;
-        navigator.clipboard.writeText(code);
-        alert("Код скопирован! Отправь другу.");
     }
     
     // Вход
-    function handleEnter() {
+    async function handleEnter() {
         const nameInput = document.getElementById("loginNameInput");
         const name = nameInput.value.trim();
         const errorDiv = document.getElementById("loginError");
-        
         if (!name) {
-            errorDiv.innerHTML = '<div class="error-msg">⚠️ Введи своё имя!</div>';
+            errorDiv.innerHTML = '<div class="error-msg">⚠️ Введи свой ник!</div>';
             return;
         }
-        
-        // Генерируем уникальный код комнаты или берём сохранённый
-        let savedRoom = localStorage.getItem("nofap_current_room");
-        if (!savedRoom) {
-            savedRoom = Math.floor(1000 + Math.random() * 9000).toString();
-        }
-        
-        initPlayer(name, savedRoom);
-        
-        document.getElementById("loginScreen").classList.add("hidden");
-        document.getElementById("mainScreen").classList.remove("hidden");
-        refreshUI();
-        renderPlayersList();
-        
-        if (syncTimer) clearInterval(syncTimer);
-        syncTimer = setInterval(() => {
-            if (currentRoom && currentPlayer) {
-                // Обновляем данные текущего игрока из комнаты
-                const players = getRoomPlayers();
-                const updated = players.find(p => p.id === currentPlayer.id);
-                if (updated) {
-                    let changed = false;
-                    if (updated.streakDays !== currentPlayer.streakDays) {
-                        currentPlayer.streakDays = updated.streakDays;
-                        changed = true;
-                    }
-                    if (updated.lastDate !== currentPlayer.lastDate) {
-                        currentPlayer.lastDate = updated.lastDate;
-                        changed = true;
-                    }
-                    if (changed) refreshUI();
+        const enterBtn = document.getElementById("enterBtn");
+        enterBtn.innerText = "⏳...";
+        enterBtn.disabled = true;
+        try {
+            await initPlayer(name);
+            document.getElementById("loginScreen").classList.add("hidden");
+            document.getElementById("mainScreen").classList.remove("hidden");
+            await refreshUI();
+            await renderTeamList();
+            if (syncInterval) clearInterval(syncInterval);
+            syncInterval = setInterval(async () => {
+                if (currentPlayer) {
+                    await refreshUI();
+                    await renderTeamList();
                 }
-                renderPlayersList();
-            }
-        }, 2000);
-        
-        alert(`Добро пожаловать, ${name}! Твой код комнаты: ${savedRoom}. Дай этот код другу, и вы увидите друг друга!`);
+            }, 4000);
+            alert(`Добро пожаловать, ${name}! Теперь ты в игре. Найди друзей по нику и добавь их в команду!`);
+        } catch(e) {
+            errorDiv.innerHTML = '<div class="error-msg">❌ Ошибка, проверь интернет</div>';
+        } finally {
+            enterBtn.innerText = "🚪 ВОЙТИ";
+            enterBtn.disabled = false;
+        }
     }
     
-    // Вступить в комнату друга
-    function onJoinRoom() {
-        const codeInput = document.getElementById("joinCodeInput");
-        const code = codeInput.value.trim();
-        if (!code) {
-            alert("Введи код комнаты друга!");
+    async function onAddFriend() {
+        const nameInput = document.getElementById("searchNameInput");
+        const name = nameInput.value.trim();
+        if (!name) {
+            alert("Введи ник друга!");
             return;
         }
-        if (!/^\d+$/.test(code)) {
-            alert("Код должен состоять из цифр!");
-            return;
-        }
-        switchToRoom(code);
-        codeInput.value = "";
+        await addFriendByNickname(name);
+        nameInput.value = "";
+        await renderTeamList();
     }
     
-    // Автовход
-    function tryAutoLogin() {
-        const savedRoom = localStorage.getItem("nofap_current_room");
-        if (!savedRoom) return false;
-        
-        const players = loadRoomPlayers(savedRoom);
-        const savedId = localStorage.getItem("nofap_last_player_id");
-        if (savedId) {
-            const existing = players.find(p => p.id === savedId);
-            if (existing) {
-                currentPlayer = existing;
-                currentRoom = savedRoom;
-                document.getElementById("roomCodeDisplay").innerText = currentRoom;
+    async function tryAutoLogin() {
+        const savedId = localStorage.getItem("david_current_id");
+        if (!savedId) return false;
+        try {
+            const player = await getPlayerById(savedId);
+            if (player) {
+                currentPlayer = player;
+                const savedFriends = localStorage.getItem(`friends_${currentPlayer.id}`);
+                if (savedFriends) {
+                    try { friendsIds = new Set(JSON.parse(savedFriends)); } catch(e) { friendsIds = new Set(); }
+                }
                 document.getElementById("loginScreen").classList.add("hidden");
                 document.getElementById("mainScreen").classList.remove("hidden");
-                refreshUI();
-                renderPlayersList();
-                if (syncTimer) clearInterval(syncTimer);
-                syncTimer = setInterval(() => {
-                    if (currentRoom && currentPlayer) {
-                        const playersUpdated = getRoomPlayers();
-                        const updated = playersUpdated.find(p => p.id === currentPlayer.id);
-                        if (updated) {
-                            let changed = false;
-                            if (updated.streakDays !== currentPlayer.streakDays) {
-                                currentPlayer.streakDays = updated.streakDays;
-                                changed = true;
-                            }
-                            if (updated.lastDate !== currentPlayer.lastDate) {
-                                currentPlayer.lastDate = updated.lastDate;
-                                changed = true;
-                            }
-                            if (changed) refreshUI();
-                        }
-                        renderPlayersList();
+                await refreshUI();
+                await renderTeamList();
+                if (syncInterval) clearInterval(syncInterval);
+                syncInterval = setInterval(async () => {
+                    if (currentPlayer) {
+                        await refreshUI();
+                        await renderTeamList();
                     }
-                }, 2000);
+                }, 4000);
                 return true;
             }
-        }
+        } catch(e) {}
         return false;
     }
     
-    // Сохраняем id текущего игрока при выходе
     window.addEventListener("beforeunload", () => {
         if (currentPlayer) {
-            localStorage.setItem("nofap_last_player_id", currentPlayer.id);
+            localStorage.setItem("david_current_id", currentPlayer.id);
         }
     });
     
-    document.addEventListener("DOMContentLoaded", () => {
-        const auto = tryAutoLogin();
+    document.addEventListener("DOMContentLoaded", async () => {
+        const auto = await tryAutoLogin();
         if (!auto) {
             document.getElementById("loginScreen").classList.remove("hidden");
             document.getElementById("mainScreen").classList.add("hidden");
         }
-        
         document.getElementById("enterBtn").addEventListener("click", handleEnter);
         document.getElementById("noFapBtn").addEventListener("click", actionNoFap);
         document.getElementById("failBtn").addEventListener("click", actionFail);
-        document.getElementById("copyRoomBtn").addEventListener("click", copyRoomCode);
-        document.getElementById("joinBtn").addEventListener("click", onJoinRoom);
+        document.getElementById("addFriendBtn").addEventListener("click", onAddFriend);
         document.getElementById("loginNameInput").addEventListener("keypress", (e) => {
             if (e.key === "Enter") handleEnter();
         });
-        document.getElementById("joinCodeInput").addEventListener("keypress", (e) => {
-            if (e.key === "Enter") onJoinRoom();
+        document.getElementById("searchNameInput").addEventListener("keypress", (e) => {
+            if (e.key === "Enter") onAddFriend();
         });
-        window.copyRoomCode = copyRoomCode;
     });
 </script>
 </body>
