@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>ДАВИД | Не дрочи — синхронизация по коду</title>
+    <title>ДАВИД | Не дрочи — комната с друзьями</title>
     <style>
         * {
             margin: 0;
@@ -27,11 +27,10 @@
         .login-screen {
             background: rgba(10, 20, 28, 0.95);
             backdrop-filter: blur(16px);
-            border-radius: 64px;
+            border-radius: 56px;
             padding: 32px 20px;
             text-align: center;
             border: 1px solid #ffb347aa;
-            box-shadow: 0 25px 40px black;
         }
 
         .login-screen h1 {
@@ -45,21 +44,21 @@
 
         .login-screen input {
             width: 90%;
-            padding: 14px 16px;
-            font-size: 1.1rem;
+            padding: 14px;
+            font-size: 1rem;
             border-radius: 60px;
             border: none;
             background: #fff7e8;
             text-align: center;
             font-weight: bold;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .login-screen button {
             background: linear-gradient(95deg, #ff9f2e, #ff6a00);
             border: none;
             padding: 12px 24px;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: bold;
             border-radius: 60px;
             color: white;
@@ -70,7 +69,6 @@
 
         .login-screen button:active {
             transform: translateY(2px);
-            box-shadow: 0 2px 0 #a13f00;
         }
 
         .main-screen {
@@ -126,7 +124,6 @@
 
         .btn-primary:active {
             transform: translateY(2px);
-            box-shadow: 0 2px 0 #166534;
         }
 
         .btn-primary:disabled {
@@ -160,7 +157,7 @@
             color: #ffdeae;
         }
 
-        .code-section {
+        .room-section {
             background: #0b1922cc;
             margin: 12px 16px;
             border-radius: 36px;
@@ -168,33 +165,33 @@
             border: 1px solid #ffaa66;
         }
 
-        .code-section h3 {
+        .room-section h3 {
             color: #ffd68a;
             font-size: 0.85rem;
             margin-bottom: 8px;
         }
 
-        .code-box {
+        .room-code {
             background: #010a0f;
             border-radius: 28px;
             padding: 10px;
             font-family: monospace;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: bold;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
             text-align: center;
             color: #ffdd99;
             margin-bottom: 10px;
             cursor: pointer;
         }
 
-        .sync-row {
+        .join-row {
             display: flex;
             gap: 8px;
             margin-top: 8px;
         }
 
-        .sync-row input {
+        .join-row input {
             flex: 2;
             background: #1e2a2f;
             border: 1px solid #ffaa44;
@@ -206,7 +203,7 @@
             font-family: monospace;
         }
 
-        .sync-row button {
+        .join-row button {
             background: #ff9f2e;
             border: none;
             border-radius: 40px;
@@ -313,11 +310,11 @@
 <div class="app">
     <div id="loginScreen" class="login-screen">
         <h1>🔥 ДАВИД 🔥</h1>
-        <p style="color:#ffdd99; margin-bottom: 16px;">Введи имя — начни трекать</p>
+        <p style="color:#ffdd99; margin-bottom: 16px;">Введи имя — создай комнату</p>
         <input type="text" id="loginNameInput" placeholder="Твой ник" maxlength="20">
         <button id="enterBtn">🚪 ВОЙТИ</button>
         <div id="loginError"></div>
-        <p style="margin-top: 20px; font-size: 11px; color:#bba87a;">👇 Договорись с другом об общем коде (например, 1234) — введите его оба</p>
+        <p style="margin-top: 20px; font-size: 11px; color:#bba87a;">👇 После входа создашь комнату. Дай код другу — он войдёт и вы увидите друг друга!</p>
     </div>
 
     <div id="mainScreen" class="main-screen hidden">
@@ -335,135 +332,142 @@
         <button class="btn-fail" id="failBtn">😞 СРЫВ</button>
         <div class="info-message" id="dailyInfoText"></div>
 
-        <div class="code-section">
-            <h3>🔑 ОБЩИЙ КОД С ДРУГОМ</h3>
-            <div class="code-box" id="myRoomCode" onclick="copyCode()">---</div>
-            <button id="copyCodeBtn" style="background:#ffaa33; border:none; border-radius:40px; padding:6px; width:100%; font-weight:bold;">📋 КОПИРОВАТЬ КОД</button>
+        <div class="room-section">
+            <h3>🔑 КОД ТВОЕЙ КОМНАТЫ (дай другу)</h3>
+            <div class="room-code" id="roomCodeDisplay" onclick="copyRoomCode()">---</div>
+            <button id="copyRoomBtn" style="background:#ffaa33; border:none; border-radius:40px; padding:6px; width:100%; font-weight:bold;">📋 КОПИРОВАТЬ КОД</button>
             
-            <div class="sync-row">
-                <input type="text" id="syncCodeInput" placeholder="Введи код друга">
-                <button id="syncBtn">Синхронизировать</button>
+            <h3 style="margin-top: 12px;">➕ ВСТУПИТЬ В КОМНАТУ ДРУГА</h3>
+            <div class="join-row">
+                <input type="text" id="joinCodeInput" placeholder="Введи код комнаты друга">
+                <button id="joinBtn">Вступить</button>
             </div>
-            <p style="font-size:0.55rem; color:#bba87a; margin-top:6px;">💡 Договоритесь с другом об одном коде (например, 777). Введите его оба — и ваши данные объединятся!</p>
+            <p style="font-size:0.55rem; color:#bba87a; margin-top:6px;">💡 Введите с другом ОДИНАКОВЫЙ код — и ваши данные объединятся автоматически!</p>
         </div>
 
         <div class="players-section">
             <h2>👥 КОМАНДА</h2>
             <div id="globalPlayersList" class="player-list">
-                <li style="color:#aaa; list-style:none;">Ты пока один</li>
+                <li style="color:#aaa; list-style:none;">Загрузка...</li>
             </div>
         </div>
 
-        <div class="status" id="syncStatus">✅ Локальный режим</div>
-        <footer>🕛 Кнопка "не дрочил" — 1 раз в сутки<br>📡 Введите ОДИНАКОВЫЙ код с другом — ваши данные объединятся!</footer>
+        <div class="status" id="syncStatus">🔄 Синхронизация...</div>
+        <footer>🕛 Кнопка "не дрочил" — 1 раз в сутки (сброс в 00:00)<br>📡 Введите ОДИНАКОВЫЙ код комнаты — и вы сразу увидите друг друга!</footer>
     </div>
 </div>
 
 <script>
-    // ==================== ПРОСТАЯ СИНХРОНИЗАЦИЯ ЧЕРЕЗ ОБЩИЙ КОМНАТНЫЙ КОД ====================
-    // Всё хранится в localStorage по ключу комнаты. Друзья с одинаковым кодом видят друг друга.
+    // ==================== ПРОСТАЯ СИНХРОНИЗАЦИЯ ====================
+    // Всё работает через localStorage с ключом комнаты.
+    // Данные синхронизируются автоматически при обновлении страницы/таймере.
     
     let currentPlayer = null;
-    let currentRoomCode = null;
-    let allPlayersInRoom = []; // список всех игроков в комнате
-    let refreshTimer = null;
+    let currentRoom = null;
+    let syncTimer = null;
     
     function getTodayStr() {
         const d = new Date();
         return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     }
     
-    // Сохранить всех игроков комнаты
-    function saveRoomData() {
-        if (!currentRoomCode) return;
-        const roomKey = `david_room_${currentRoomCode}`;
-        localStorage.setItem(roomKey, JSON.stringify({
-            players: allPlayersInRoom,
-            updated: Date.now()
-        }));
-    }
-    
-    // Загрузить всех игроков комнаты
-    function loadRoomData() {
-        if (!currentRoomCode) return [];
-        const roomKey = `david_room_${currentRoomCode}`;
-        const data = localStorage.getItem(roomKey);
+    // Загрузить всех игроков из комнаты
+    function loadRoomPlayers(room) {
+        const key = `nofap_room_${room}`;
+        const data = localStorage.getItem(key);
         if (data) {
             try {
-                const parsed = JSON.parse(data);
-                allPlayersInRoom = parsed.players || [];
-                return allPlayersInRoom;
-            } catch(e) {}
+                return JSON.parse(data);
+            } catch(e) { return []; }
         }
-        allPlayersInRoom = [];
         return [];
     }
     
-    // Обновить/добавить текущего игрока в комнате
-    function updateCurrentPlayerInRoom() {
-        if (!currentPlayer || !currentRoomCode) return;
-        const index = allPlayersInRoom.findIndex(p => p.id === currentPlayer.id);
-        if (index !== -1) {
-            allPlayersInRoom[index] = { ...currentPlayer };
-        } else {
-            allPlayersInRoom.push({ ...currentPlayer });
-        }
-        saveRoomData();
+    // Сохранить всех игроков в комнату
+    function saveRoomPlayers(room, players) {
+        const key = `nofap_room_${room}`;
+        localStorage.setItem(key, JSON.stringify(players));
     }
     
-    // Применить синхронизацию — объединить данные с другим игроком/комнатой
-    function syncWithCode(code) {
+    // Обновить текущего игрока в комнате
+    function updateCurrentPlayerInRoom() {
+        if (!currentRoom || !currentPlayer) return;
+        let players = loadRoomPlayers(currentRoom);
+        const index = players.findIndex(p => p.id === currentPlayer.id);
+        if (index !== -1) {
+            players[index] = { ...currentPlayer, lastSeen: Date.now() };
+        } else {
+            players.push({ ...currentPlayer, lastSeen: Date.now() });
+        }
+        saveRoomPlayers(currentRoom, players);
+    }
+    
+    // Получить всех игроков комнаты (с обновлёнными данными)
+    function getRoomPlayers() {
+        if (!currentRoom) return [];
+        return loadRoomPlayers(currentRoom);
+    }
+    
+    // Переключиться в другую комнату (объединить данные)
+    function switchToRoom(newRoom) {
         if (!currentPlayer) return false;
-        if (code === currentRoomCode) {
+        if (newRoom === currentRoom) {
             alert("Вы уже в этой комнате!");
             return false;
         }
         
-        const targetRoomKey = `david_room_${code}`;
-        const targetData = localStorage.getItem(targetRoomKey);
-        let targetPlayers = [];
-        if (targetData) {
-            try {
-                targetPlayers = JSON.parse(targetData).players || [];
-            } catch(e) {}
+        // Загружаем игроков из новой комнаты
+        let newRoomPlayers = loadRoomPlayers(newRoom);
+        
+        // Добавляем текущего игрока, если его там нет
+        const exists = newRoomPlayers.find(p => p.id === currentPlayer.id);
+        if (!exists) {
+            newRoomPlayers.push({ ...currentPlayer, lastSeen: Date.now() });
+        } else {
+            // обновляем данные текущего
+            const idx = newRoomPlayers.findIndex(p => p.id === currentPlayer.id);
+            newRoomPlayers[idx] = { ...currentPlayer, lastSeen: Date.now() };
         }
         
-        // Объединяем данные: добавляем всех игроков из целевой комнаты
-        let mergedCount = 0;
-        for (let p of targetPlayers) {
-            if (p.id !== currentPlayer.id) {
-                const exists = allPlayersInRoom.find(ex => ex.id === p.id);
-                if (!exists) {
-                    allPlayersInRoom.push({ ...p });
-                    mergedCount++;
+        // Сохраняем в новую комнату
+        saveRoomPlayers(newRoom, newRoomPlayers);
+        
+        // Если была старая комната — тоже туда сохраняем объединённые данные (чтобы у друга появились)
+        if (currentRoom && currentRoom !== newRoom) {
+            let oldRoomPlayers = loadRoomPlayers(currentRoom);
+            // Добавляем всех из новой комнаты в старую (для синхронизации)
+            for (let p of newRoomPlayers) {
+                const oldExists = oldRoomPlayers.find(op => op.id === p.id);
+                if (!oldExists) {
+                    oldRoomPlayers.push({ ...p });
                 }
             }
+            saveRoomPlayers(currentRoom, oldRoomPlayers);
         }
         
-        // Сохраняем объединённые данные в обе комнаты (чтобы у друга тоже были наши данные)
-        saveRoomData();
+        currentRoom = newRoom;
+        localStorage.setItem("nofap_current_room", currentRoom);
         
-        // Также сохраняем в целевую комнату (чтобы друг нас увидел)
-        const finalPlayers = [...allPlayersInRoom];
-        localStorage.setItem(targetRoomKey, JSON.stringify({
-            players: finalPlayers,
-            updated: Date.now()
-        }));
+        // Обновляем отображение кода
+        document.getElementById("roomCodeDisplay").innerText = currentRoom;
         
-        currentRoomCode = code;
-        localStorage.setItem("david_current_room", currentRoomCode);
-        document.getElementById("myRoomCode").innerText = currentRoomCode;
+        // Перезагружаем данные текущего игрока из комнаты
+        const refreshed = loadRoomPlayers(currentRoom).find(p => p.id === currentPlayer.id);
+        if (refreshed) {
+            currentPlayer = refreshed;
+        }
         
-        loadRoomData();
+        updateCurrentPlayerInRoom();
+        refreshUI();
         renderPlayersList();
-        alert(`✅ Синхронизация завершена! Добавлено ${mergedCount} игроков. Теперь вы видите друг друга!`);
+        alert(`✅ Вы вошли в комнату ${currentRoom}! Теперь вы с другом видите друг друга.`);
         return true;
     }
     
     // Создать нового игрока
-    function createNewPlayer(name) {
+    function createPlayer(name) {
         return {
-            id: "p_" + Date.now() + "_" + Math.random().toString(36).substr(2, 5),
+            id: Date.now() + "_" + Math.random().toString(36).substr(2, 6),
             name: name.trim(),
             streakDays: 0,
             lastDate: null,
@@ -473,25 +477,23 @@
     }
     
     // Инициализация после входа
-    function initAfterLogin(name, roomCode) {
-        currentRoomCode = roomCode;
-        localStorage.setItem("david_current_room", currentRoomCode);
-        document.getElementById("myRoomCode").innerText = currentRoomCode;
+    function initPlayer(name, room) {
+        currentRoom = room;
+        localStorage.setItem("nofap_current_room", currentRoom);
+        document.getElementById("roomCodeDisplay").innerText = currentRoom;
         
-        loadRoomData();
+        let players = loadRoomPlayers(currentRoom);
+        let existing = players.find(p => p.name.toLowerCase() === name.toLowerCase());
         
-        // Проверяем, есть ли уже игрок с таким именем в комнате
-        let existing = allPlayersInRoom.find(p => p.name.toLowerCase() === name.toLowerCase());
         if (existing) {
             currentPlayer = existing;
+            currentPlayer.lastSeen = Date.now();
         } else {
-            currentPlayer = createNewPlayer(name);
-            allPlayersInRoom.push(currentPlayer);
-            saveRoomData();
+            currentPlayer = createPlayer(name);
+            players.push(currentPlayer);
+            saveRoomPlayers(currentRoom, players);
         }
-        currentPlayer.lastSeen = Date.now();
         updateCurrentPlayerInRoom();
-        
         return currentPlayer;
     }
     
@@ -500,7 +502,7 @@
         if (!currentPlayer) return;
         const today = getTodayStr();
         if (currentPlayer.lastDate === today) {
-            alert("Сегодня уже нажимал!");
+            alert("Сегодня уже нажимал! Жди завтра.");
             refreshUI();
             return;
         }
@@ -516,18 +518,19 @@
         updateCurrentPlayerInRoom();
         refreshUI();
         renderPlayersList();
-        alert(`🔥 Стаж ${newStreak} дней!`);
+        alert(`🔥 КРАСАВА! Твой стаж: ${newStreak} дней!`);
     }
     
     function actionFail() {
         if (!currentPlayer) return;
+        const oldStreak = currentPlayer.streakDays;
         currentPlayer.streakDays = 0;
         currentPlayer.lastDate = null;
         currentPlayer.lastSeen = Date.now();
         updateCurrentPlayerInRoom();
         refreshUI();
         renderPlayersList();
-        alert(`😭 Стаж обнулён!`);
+        alert(`😭 Срыв... твой стаж ${oldStreak} дней обнулён. Завтра новый старт!`);
     }
     
     function refreshUI() {
@@ -539,28 +542,28 @@
         const infoDiv = document.getElementById("dailyInfoText");
         if (already) {
             btn.disabled = true;
-            infoDiv.innerHTML = "✅ Сегодня уже нажал! Завтра новая попытка";
+            infoDiv.innerHTML = "✅ Сегодня уже нажал! Кнопка обновится завтра в 00:00";
         } else {
             btn.disabled = false;
-            infoDiv.innerHTML = "🚀 Жми 'не дрочил' один раз в день";
+            infoDiv.innerHTML = "🚀 Жми 'не дрочил' один раз в сутки";
         }
         let quote = currentPlayer.streakDays === 0 ? "💪 Начни прямо сегодня" :
                     currentPlayer.streakDays < 3 ? "⚡ Первые дни самые сложные" :
                     currentPlayer.streakDays < 7 ? "🎯 Ты уже в игре!" : "🌟 Ты легенда!";
         document.getElementById("motivationPhrase").innerHTML = quote;
         
+        const players = getRoomPlayers();
         const statusDiv = document.getElementById("syncStatus");
-        const playersCount = allPlayersInRoom.length;
-        if (playersCount <= 1) {
-            statusDiv.innerHTML = "👤 Ты один. Дай другу свой код, чтобы объединиться!";
+        if (players.length <= 1) {
+            statusDiv.innerHTML = "👤 Ты один. Дай свой код другу, чтобы объединиться!";
         } else {
-            statusDiv.innerHTML = `👥 В комнате: ${playersCount} человек`;
+            statusDiv.innerHTML = `👥 В комнате: ${players.length} человек`;
         }
     }
     
     function renderPlayersList() {
-        loadRoomData();
-        const players = [...allPlayersInRoom];
+        if (!currentRoom) return;
+        let players = getRoomPlayers();
         const today = getTodayStr();
         for (let p of players) {
             p.pressedToday = (p.lastDate === today);
@@ -596,8 +599,8 @@
         }
     }
     
-    function copyCode() {
-        const code = document.getElementById("myRoomCode").innerText;
+    function copyRoomCode() {
+        const code = document.getElementById("roomCodeDisplay").innerText;
         navigator.clipboard.writeText(code);
         alert("Код скопирован! Отправь другу.");
     }
@@ -609,42 +612,52 @@
         const errorDiv = document.getElementById("loginError");
         
         if (!name) {
-            errorDiv.innerHTML = '<div class="error-msg">⚠️ Введи имя!</div>';
+            errorDiv.innerHTML = '<div class="error-msg">⚠️ Введи своё имя!</div>';
             return;
         }
         
-        // Генерируем или загружаем сохранённую комнату
-        let savedRoom = localStorage.getItem("david_current_room");
+        // Генерируем уникальный код комнаты или берём сохранённый
+        let savedRoom = localStorage.getItem("nofap_current_room");
         if (!savedRoom) {
             savedRoom = Math.floor(1000 + Math.random() * 9000).toString();
         }
         
-        initAfterLogin(name, savedRoom);
+        initPlayer(name, savedRoom);
         
         document.getElementById("loginScreen").classList.add("hidden");
         document.getElementById("mainScreen").classList.remove("hidden");
         refreshUI();
         renderPlayersList();
         
-        if (refreshTimer) clearInterval(refreshTimer);
-        refreshTimer = setInterval(() => {
-            if (currentPlayer && currentRoomCode) {
-                loadRoomData();
-                // обновляем свои данные на случай если кто-то изменил в той же комнате
-                const updated = allPlayersInRoom.find(p => p.id === currentPlayer.id);
+        if (syncTimer) clearInterval(syncTimer);
+        syncTimer = setInterval(() => {
+            if (currentRoom && currentPlayer) {
+                // Обновляем данные текущего игрока из комнаты
+                const players = getRoomPlayers();
+                const updated = players.find(p => p.id === currentPlayer.id);
                 if (updated) {
-                    currentPlayer = updated;
-                    refreshUI();
+                    let changed = false;
+                    if (updated.streakDays !== currentPlayer.streakDays) {
+                        currentPlayer.streakDays = updated.streakDays;
+                        changed = true;
+                    }
+                    if (updated.lastDate !== currentPlayer.lastDate) {
+                        currentPlayer.lastDate = updated.lastDate;
+                        changed = true;
+                    }
+                    if (changed) refreshUI();
                 }
                 renderPlayersList();
             }
         }, 2000);
         
-        alert(`Добро пожаловать, ${name}! Твой код комнаты: ${savedRoom}. Дай этот код другу, чтобы объединиться.`);
+        alert(`Добро пожаловать, ${name}! Твой код комнаты: ${savedRoom}. Дай этот код другу, и вы увидите друг друга!`);
     }
     
-    function onSync() {
-        const code = document.getElementById("syncCodeInput").value.trim();
+    // Вступить в комнату друга
+    function onJoinRoom() {
+        const codeInput = document.getElementById("joinCodeInput");
+        const code = codeInput.value.trim();
         if (!code) {
             alert("Введи код комнаты друга!");
             return;
@@ -653,37 +666,43 @@
             alert("Код должен состоять из цифр!");
             return;
         }
-        syncWithCode(code);
-        document.getElementById("syncCodeInput").value = "";
-        refreshUI();
-        renderPlayersList();
+        switchToRoom(code);
+        codeInput.value = "";
     }
     
+    // Автовход
     function tryAutoLogin() {
-        const savedRoom = localStorage.getItem("david_current_room");
+        const savedRoom = localStorage.getItem("nofap_current_room");
         if (!savedRoom) return false;
         
-        loadRoomData();
-        // ищем последнего активного игрока (по сохранённому id)
-        const savedId = localStorage.getItem("david_last_player_id");
+        const players = loadRoomPlayers(savedRoom);
+        const savedId = localStorage.getItem("nofap_last_player_id");
         if (savedId) {
-            const existing = allPlayersInRoom.find(p => p.id === savedId);
+            const existing = players.find(p => p.id === savedId);
             if (existing) {
                 currentPlayer = existing;
-                currentRoomCode = savedRoom;
-                document.getElementById("myRoomCode").innerText = currentRoomCode;
+                currentRoom = savedRoom;
+                document.getElementById("roomCodeDisplay").innerText = currentRoom;
                 document.getElementById("loginScreen").classList.add("hidden");
                 document.getElementById("mainScreen").classList.remove("hidden");
                 refreshUI();
                 renderPlayersList();
-                if (refreshTimer) clearInterval(refreshTimer);
-                refreshTimer = setInterval(() => {
-                    if (currentPlayer && currentRoomCode) {
-                        loadRoomData();
-                        const updated = allPlayersInRoom.find(p => p.id === currentPlayer.id);
+                if (syncTimer) clearInterval(syncTimer);
+                syncTimer = setInterval(() => {
+                    if (currentRoom && currentPlayer) {
+                        const playersUpdated = getRoomPlayers();
+                        const updated = playersUpdated.find(p => p.id === currentPlayer.id);
                         if (updated) {
-                            currentPlayer = updated;
-                            refreshUI();
+                            let changed = false;
+                            if (updated.streakDays !== currentPlayer.streakDays) {
+                                currentPlayer.streakDays = updated.streakDays;
+                                changed = true;
+                            }
+                            if (updated.lastDate !== currentPlayer.lastDate) {
+                                currentPlayer.lastDate = updated.lastDate;
+                                changed = true;
+                            }
+                            if (changed) refreshUI();
                         }
                         renderPlayersList();
                     }
@@ -693,6 +712,13 @@
         }
         return false;
     }
+    
+    // Сохраняем id текущего игрока при выходе
+    window.addEventListener("beforeunload", () => {
+        if (currentPlayer) {
+            localStorage.setItem("nofap_last_player_id", currentPlayer.id);
+        }
+    });
     
     document.addEventListener("DOMContentLoaded", () => {
         const auto = tryAutoLogin();
@@ -704,15 +730,15 @@
         document.getElementById("enterBtn").addEventListener("click", handleEnter);
         document.getElementById("noFapBtn").addEventListener("click", actionNoFap);
         document.getElementById("failBtn").addEventListener("click", actionFail);
-        document.getElementById("copyCodeBtn").addEventListener("click", copyCode);
-        document.getElementById("syncBtn").addEventListener("click", onSync);
+        document.getElementById("copyRoomBtn").addEventListener("click", copyRoomCode);
+        document.getElementById("joinBtn").addEventListener("click", onJoinRoom);
         document.getElementById("loginNameInput").addEventListener("keypress", (e) => {
             if (e.key === "Enter") handleEnter();
         });
-        document.getElementById("syncCodeInput").addEventListener("keypress", (e) => {
-            if (e.key === "Enter") onSync();
+        document.getElementById("joinCodeInput").addEventListener("keypress", (e) => {
+            if (e.key === "Enter") onJoinRoom();
         });
-        window.copyCode = copyCode;
+        window.copyRoomCode = copyRoomCode;
     });
 </script>
 </body>
